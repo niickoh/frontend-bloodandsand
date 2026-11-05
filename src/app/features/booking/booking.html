@@ -1,0 +1,235 @@
+@if (done(); as b) {
+  <!-- Confirmation -->
+  <section class="mx-auto max-w-3xl px-4 pt-12 pb-28 md:px-6 md:pt-20" aria-labelledby="done-title">
+    <span class="grid size-14 place-items-center bg-lime text-ink"><bs-icon name="check" [size]="30" /></span>
+    <h1 id="done-title" class="mt-6 text-[clamp(3.5rem,17vw,8rem)]">
+      <span class="type-display block">Reserva</span>
+      <span class="type-outline block">confirmada</span>
+    </h1>
+    <dl class="mt-8 grid grid-cols-2 gap-px bg-steel text-sm sm:grid-cols-4">
+      <div class="bg-iron p-4"><dt class="text-ash">Clase</dt><dd class="mt-1 font-punch text-2xl font-extrabold italic">{{ b.discipline }}</dd></div>
+      <div class="bg-iron p-4"><dt class="text-ash">Día</dt><dd class="mt-1 font-semibold">{{ longDate(b.date) }}</dd></div>
+      <div class="bg-iron p-4"><dt class="text-ash">Hora</dt><dd class="mt-1 font-punch text-2xl font-extrabold italic">{{ b.start }}</dd></div>
+      <div class="bg-iron p-4"><dt class="text-ash">Código</dt><dd class="mt-1 font-punch text-2xl font-extrabold text-lime italic">{{ b.code }}</dd></div>
+    </dl>
+    <p class="mt-6 max-w-[56ch] text-bone/75">
+      Llega 10 minutos antes. Si no puedes venir, cancela desde Mis reservas hasta 3 horas antes y, si usaste tu plan, no pierdes la clase.
+    </p>
+    <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <button type="button" class="tape" (click)="addToCalendar(b)"><bs-icon name="download" /> Añadir a mi calendario</button>
+      @if (notifications.permission() !== 'granted') {
+        <button type="button" class="tape-ghost" (click)="enableAlerts(b)"><bs-icon name="bell" /> Avisarme antes de la clase</button>
+      }
+      @if (auth.loggedIn()) {
+        <a routerLink="/mis-reservas" class="tape-ghost">Ver mis reservas</a>
+      }
+    </div>
+    @if (!auth.loggedIn()) {
+      <div class="mt-10 border border-steel bg-iron p-5">
+        <p class="font-punch text-2xl font-extrabold italic">Guarda tus reservas</p>
+        <p class="mt-1 text-bone/75">Crea tu cuenta con {{ b.email }} para ver, cancelar y comprar planes. Esta reserva quedará en tu cuenta.</p>
+        <a routerLink="/ingresar" [queryParams]="{ modo: 'registro', next: '/mis-reservas' }" class="tape mt-4 !text-lg">Crear cuenta</a>
+      </div>
+    }
+    <button type="button" class="mt-8 text-sm text-bone/60 underline underline-offset-4 hover:text-bone" (click)="restart()">Reservar otra clase</button>
+  </section>
+} @else {
+  <section class="mx-auto max-w-7xl px-4 pt-8 pb-40 md:px-6 md:pt-12 md:pb-24">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <h1 class="text-[clamp(3rem,13vw,6.5rem)]">
+        <span class="type-display block">Reserva</span>
+        <span class="type-outline block">tu clase</span>
+      </h1>
+      <ol class="flex gap-2" aria-label="Pasos de la reserva">
+        @for (label of ['Clase', 'Datos', 'Pago']; track label; let i = $index) {
+          <li class="flex-1 md:w-28 md:flex-none" [attr.aria-current]="step() === i + 1 ? 'step' : null">
+            <span class="block h-1.5 -skew-x-12" [class]="step() >= i + 1 ? 'bg-lime' : 'bg-steel'"></span>
+            <span class="mt-1.5 block text-sm" [class]="step() === i + 1 ? 'font-semibold text-bone' : 'text-ash'">{{ i + 1 }}. {{ label }}</span>
+          </li>
+        }
+      </ol>
+    </div>
+
+    <div class="mt-10 grid gap-10 lg:grid-cols-[1fr_360px] lg:items-start">
+      <div>
+        @switch (step()) {
+          @case (1) {
+            <div role="radiogroup" aria-label="Disciplina" class="scrollbar-none -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0">
+              @for (f of filters(); track f.id) {
+                <button
+                  type="button"
+                  role="radio"
+                  [attr.aria-checked]="filter() === f.id"
+                  (click)="filter.set(f.id)"
+                  class="shrink-0 border-2 px-4 py-1.5 font-punch text-lg font-bold italic uppercase transition-colors"
+                  [class]="filter() === f.id ? 'border-bone bg-bone text-ink' : 'border-steel text-bone/75 hover:border-ash'"
+                >
+                  {{ f.label }}
+                </button>
+              }
+            </div>
+
+            <div class="mt-8">
+              <bs-day-strip [(selected)]="date" [filter]="filter()" />
+            </div>
+
+            <h2 class="mt-10 mb-3 font-semibold text-bone/80">{{ longDate(date()) }}</h2>
+            @if (!store.sessionsLoaded()) {
+              <div class="space-y-px" aria-busy="true">
+                @for (i of [1, 2, 3]; track i) { <div class="h-[76px] animate-pulse bg-iron"></div> }
+              </div>
+            } @else if (sessions().length) {
+              <ul role="radiogroup" aria-label="Elige el horario" class="divide-y divide-steel border-y border-steel">
+                @for (x of sessions(); track x.id) {
+                  @let full = x.taken >= x.capacity;
+                  @let past = isPast(x.startsAt);
+                  @let off = past || full || x.bookedByMe;
+                  <li>
+                    <button
+                      type="button"
+                      role="radio"
+                      [attr.aria-checked]="selectedId() === x.id"
+                      [disabled]="off"
+                      (click)="pick(x.id)"
+                      class="grid w-full grid-cols-[auto_1fr_auto] items-center gap-x-4 gap-y-1 py-4 pr-3 pl-3 text-left transition-colors md:grid-cols-[6rem_1fr_auto_auto] md:pl-4"
+                      [class]="selectedId() === x.id ? 'bg-lime/10 shadow-[inset_4px_0_0_var(--color-lime)]' : off ? 'opacity-45' : 'hover:bg-iron'"
+                    >
+                      <span class="type-display row-span-2 text-4xl md:row-span-1">{{ x.start }}</span>
+                      <span class="min-w-0">
+                        <span class="block font-punch text-2xl leading-tight font-extrabold italic">{{ x.discipline }}</span>
+                        <span class="block text-sm text-ash">{{ x.coachName ?? 'Coach por confirmar' }} · hasta {{ x.end }}</span>
+                      </span>
+                      <span class="col-start-2 md:col-start-auto">
+                        @if (x.bookedByMe) {
+                          <span class="font-punch text-base font-bold text-lime italic">Ya reservaste</span>
+                        } @else if (past) {
+                          <span class="text-sm text-ash">Ya comenzó</span>
+                        } @else {
+                          <bs-plate-meter [taken]="x.taken" [capacity]="x.capacity" />
+                        }
+                      </span>
+                      <span
+                        class="col-start-3 row-span-2 row-start-1 grid size-7 place-items-center border-2 md:col-start-4 md:row-span-1"
+                        [class]="selectedId() === x.id ? 'border-lime bg-lime text-ink' : 'border-steel'"
+                        aria-hidden="true"
+                      >
+                        @if (selectedId() === x.id) { <bs-icon name="check" [size]="16" /> }
+                      </span>
+                    </button>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <div class="border border-dashed border-steel p-6">
+                <p class="font-punch text-2xl font-extrabold italic">Sin clases este día</p>
+                <p class="mt-1 text-bone/70">Elige otro día del calendario o mira todas las disciplinas.</p>
+                @if (filter() !== 'todas') {
+                  <button type="button" class="tape-ghost mt-4 !text-lg" (click)="filter.set('todas')">Ver todas las disciplinas</button>
+                }
+              </div>
+            }
+          }
+
+          @case (2) {
+            <form class="grid max-w-xl gap-5" (submit)="$event.preventDefault(); next()" novalidate>
+              <h2 class="font-punch text-3xl font-extrabold italic">Tus datos</h2>
+              @if (auth.user(); as u) {
+                <p class="text-sm text-bone/70">Reservas con tu cuenta {{ u.email }}.</p>
+              } @else {
+                <p class="text-sm text-bone/70">
+                  No necesitas cuenta para una clase. ¿Tienes plan?
+                  <a routerLink="/ingresar" [queryParams]="{ next: '/reservar' }" class="text-lime underline underline-offset-4">Ingresa</a> para usarlo.
+                </p>
+              }
+              <label>
+                <span class="field-label">Nombre y apellido</span>
+                <input class="field" autocomplete="name" [value]="name()" (input)="name.set($any($event.target).value)" [attr.aria-invalid]="touched() && !nameOk()" />
+                @if (touched() && !nameOk()) { <span class="mt-1 block text-sm text-blood">Escribe tu nombre y apellido.</span> }
+              </label>
+              <label>
+                <span class="field-label">Correo</span>
+                <input class="field" type="email" autocomplete="email" [value]="email()" [readOnly]="auth.loggedIn()" (input)="email.set($any($event.target).value)" [attr.aria-invalid]="touched() && !emailOk()" />
+                @if (touched() && !emailOk()) { <span class="mt-1 block text-sm text-blood">Revisa el correo, por ejemplo nombre&#64;correo.cl.</span> }
+              </label>
+              <label>
+                <span class="field-label">Teléfono</span>
+                <input class="field" type="tel" autocomplete="tel" placeholder="+56 9 1234 5678" [value]="phone()" (input)="phone.set($any($event.target).value)" [attr.aria-invalid]="touched() && !phoneOk()" />
+                @if (touched() && !phoneOk()) { <span class="mt-1 block text-sm text-blood">Necesitamos tu teléfono para avisarte de cambios.</span> }
+              </label>
+              <div class="hidden gap-3 lg:flex">
+                <button type="button" class="tape-ghost" (click)="back()">Volver</button>
+                <button type="submit" class="tape" [disabled]="busy()">{{ busy() ? 'Calculando…' : 'Continuar' }}</button>
+              </div>
+            </form>
+          }
+
+          @case (3) {
+            @if (quote(); as q) {
+              <div class="max-w-xl">
+                <h2 class="font-punch text-3xl font-extrabold italic">{{ q.amount ? 'Pago' : 'Confirma tu reserva' }}</h2>
+                @if (q.amount === 0) {
+                  <p class="mt-3 flex items-center gap-3 border-l-4 border-lime bg-iron p-4">
+                    <bs-icon name="bolt" class="text-lime" /> {{ q.reason }}
+                  </p>
+                  <button type="button" class="tape mt-6 w-full !py-3.5 !text-2xl" [disabled]="busy()" (click)="confirmFree()">
+                    @if (busy()) { Reservando… } @else { Confirmar reserva }
+                  </button>
+                } @else {
+                  <p class="mt-2 text-bone/70">
+                    ¿Vienes más de una vez por semana? Con un <a routerLink="/planes" class="text-lime underline underline-offset-4">plan</a> cada clase sale más barata.
+                  </p>
+                  @if (payError()) {
+                    <p class="mt-4 border-l-4 border-blood bg-blood/10 p-4 text-sm" role="alert">{{ payError() }}</p>
+                  }
+                  <div class="mt-6"><bs-payment-form [amount]="q.amount" [busy]="busy()" (paid)="pay($event)" /></div>
+                }
+                <button type="button" class="mt-6 text-sm text-bone/60 underline underline-offset-4 hover:text-bone" (click)="back()">Volver a mis datos</button>
+              </div>
+            }
+          }
+        }
+      </div>
+
+      <aside class="hidden lg:sticky lg:top-24 lg:block" aria-label="Resumen de la reserva">
+        <div class="border border-steel bg-iron p-6">
+          <p class="text-sm text-ash">Tu reserva</p>
+          @if (selected(); as x) {
+            <p class="type-display mt-2 text-5xl">{{ x.discipline }}</p>
+            <p class="mt-3 font-semibold">{{ longDate(x.date) }}</p>
+            <p class="font-punch text-3xl font-extrabold italic">{{ x.start }} – {{ x.end }}</p>
+            @if (x.coachName) { <p class="mt-1 text-sm text-bone/70">con {{ x.coachName }}</p> }
+            <div class="mt-4 border-t border-steel pt-4">
+              <bs-plate-meter [taken]="x.taken" [capacity]="x.capacity" />
+            </div>
+            <div class="mt-4 flex items-baseline justify-between border-t border-steel pt-4">
+              <span class="text-sm text-bone/70">{{ quote()?.reason ?? (x.price ? 'Clase suelta' : 'Sin costo') }}</span>
+              <span class="font-punch text-3xl font-extrabold text-lime italic">{{ money(quote()?.amount ?? x.price) }}</span>
+            </div>
+            @if (step() === 1) {
+              <button type="button" class="tape mt-6 w-full" (click)="next()">Continuar</button>
+            }
+          } @else {
+            <p class="mt-3 text-bone/70">Elige un día y un horario con cupo para continuar.</p>
+          }
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  @if (step() < 3 && (step() === 2 || selected())) {
+    <div class="fixed inset-x-0 bottom-[calc(3.75rem+env(safe-area-inset-bottom))] z-30 border-t border-steel bg-ink/95 px-4 py-3 backdrop-blur-md lg:hidden">
+      <div class="flex items-center gap-3">
+        @if (selected(); as x) {
+          <div class="min-w-0 flex-1">
+            <p class="truncate font-punch text-xl leading-tight font-extrabold italic">{{ x.discipline }} {{ x.start }}</p>
+            <p class="truncate text-xs text-bone/65">{{ longDate(x.date) }}</p>
+          </div>
+        }
+        @if (step() === 2) {
+          <button type="button" class="tape-ghost !px-3 !text-lg" (click)="back()" aria-label="Volver"><bs-icon name="chevron-left" /></button>
+        }
+        <button type="button" class="tape !text-lg" [disabled]="busy()" (click)="next()">{{ step() === 1 ? 'Continuar' : busy() ? 'Calculando…' : 'Continuar' }}</button>
+      </div>
+    </div>
+  }
+}

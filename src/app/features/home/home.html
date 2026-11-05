@@ -1,0 +1,171 @@
+<!-- Hero: outlined poster type over a black & white photo -->
+<section class="relative isolate overflow-hidden" aria-labelledby="hero-title">
+  <picture class="absolute inset-y-0 right-0 -z-10 w-full lg:w-[48%]">
+    <img
+      src="img/hero-800.webp"
+      srcset="img/hero-480.webp 480w, img/hero-800.webp 800w"
+      sizes="(min-width: 1024px) 48vw, 100vw"
+      alt=""
+      width="670"
+      height="830"
+      fetchpriority="high"
+      decoding="async"
+      class="h-full w-full object-cover object-[50%_20%] opacity-55 lg:opacity-90"
+    />
+  </picture>
+  <div class="absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/40 to-ink/10 lg:bg-gradient-to-r lg:from-ink lg:via-ink/70 lg:to-transparent"></div>
+
+  <div class="mx-auto flex min-h-[calc(100dvh-3.5rem)] max-w-7xl flex-col justify-end px-4 pt-24 pb-28 md:px-6 md:pb-16 lg:min-h-[min(860px,calc(100dvh-4rem))]">
+    <p class="mb-5 inline-block self-start bg-bone px-3 py-1 font-punch text-lg font-extrabold text-ink italic uppercase md:text-xl">
+      Plan 100% personalizado
+    </p>
+    <h1 id="hero-title" class="text-[clamp(4rem,20vw,13rem)]">
+      <span class="hero-line type-outline block">Entrena</span>
+      <span class="hero-line type-display block text-bone [animation-delay:90ms]">a tu nivel</span>
+    </h1>
+    <p class="mt-6 max-w-[38ch] text-lg text-bone/85">
+      Box, fuerza y funcional en grupos chicos. Reserva tu clase en segundos y paga con tu plan o al momento.
+    </p>
+    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+      <a routerLink="/reservar" [queryParams]="{ d: 'evaluacion' }" class="tape sm:!text-2xl">Agenda tu evaluación gratis</a>
+      <a routerLink="/horario" class="tape-ghost">Ver horario</a>
+    </div>
+
+    @if (nextClass(); as s) {
+      <a
+        [routerLink]="'/reservar'"
+        [queryParams]="{ d: s.slug, fecha: s.date, s: s.id }"
+        class="group mt-10 flex max-w-md items-center gap-4 border-l-4 border-lime bg-ink/80 py-3 pr-4 pl-4 backdrop-blur-sm"
+      >
+        <div class="min-w-0 flex-1">
+          <p class="text-sm text-bone/65">Próxima clase con cupo · {{ isToday(s.date) ? 'hoy' : longDate(s.date) }}</p>
+          <p class="font-punch text-2xl font-extrabold italic">{{ s.discipline }} {{ s.start }} @if (s.coachName) { <span class="text-base font-bold text-bone/60">con {{ s.coachName }}</span> }</p>
+          <bs-plate-meter class="mt-1" [taken]="s.taken" [capacity]="s.capacity" />
+        </div>
+        <span class="grid size-10 place-items-center bg-lime text-ink transition-transform group-hover:translate-x-0.5">
+          <bs-icon name="chevron-right" />
+        </span>
+      </a>
+    }
+  </div>
+</section>
+
+<!-- Disciplines: poster panels, like the brand's feed -->
+<section class="py-20 md:py-28" aria-labelledby="disc-title">
+  <div class="mx-auto max-w-7xl px-4 md:px-6">
+    <div id="disc-title">
+      <bs-section-title solid="Elige tu" outline="disciplina" lead="Grupos de máximo 12 a 16 personas, coach en sala todo el tiempo y cargas ajustadas a tu nivel." />
+    </div>
+  </div>
+  <ul class="scrollbar-none mt-10 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 md:mx-auto md:grid md:max-w-7xl md:grid-cols-2 md:gap-4 md:overflow-visible md:px-6 lg:grid-cols-4">
+    @for (d of disciplines(); track d.id) {
+      <li class="w-[78vw] max-w-sm shrink-0 snap-start md:w-auto md:max-w-none">
+        <a
+          routerLink="/reservar"
+          [queryParams]="{ d: d.slug }"
+          class="@container group relative flex aspect-[4/5] flex-col justify-end overflow-hidden bg-iron p-5"
+        >
+          <img
+            [src]="'img/' + imageFor(d.image) + '-480.webp'"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            width="480"
+            height="600"
+            class="absolute inset-0 h-full w-full object-cover opacity-70 transition-[opacity,transform] duration-500 group-hover:scale-[1.03] group-hover:opacity-90"
+          />
+          <span class="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent"></span>
+          <span class="relative">
+            <span class="type-outline block text-[clamp(2.5rem,20cqi,5.5rem)]">{{ d.name }}</span>
+            <span class="mt-2 inline-block bg-lime px-2.5 py-0.5 font-punch text-lg font-extrabold text-ink italic uppercase">{{ d.tagline }}</span>
+            <span class="mt-3 block text-sm text-bone/80">{{ d.short }}</span>
+            <span class="mt-1 block text-sm text-bone/55">{{ d.durationMin }} min · {{ money(d.price) }}</span>
+          </span>
+        </a>
+      </li>
+    }
+  </ul>
+</section>
+
+<!-- How booking works: a real sequence, so numbered -->
+@defer (on viewport) {
+  <section class="border-y border-steel bg-iron py-20 md:py-24" aria-labelledby="how-title">
+    <div class="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-[1fr_1.3fr] lg:items-end">
+      <div id="how-title">
+        <bs-section-title solid="Reserva en" outline="30 segundos" lead="Sin llamar ni escribir por WhatsApp. Ves los cupos reales y confirmas al tiro." />
+      </div>
+      <ol class="grid gap-px bg-steel sm:grid-cols-3">
+        @for (step of steps; track step.title; let i = $index) {
+          <li class="bg-iron p-5">
+            <span class="type-outline block text-6xl">{{ i + 1 }}</span>
+            <p class="mt-3 font-punch text-2xl font-extrabold italic">{{ step.title }}</p>
+            <p class="mt-1 text-sm text-bone/70">{{ step.body }}</p>
+          </li>
+        }
+      </ol>
+    </div>
+  </section>
+} @placeholder {
+  <div class="h-[560px] border-y border-steel bg-iron"></div>
+}
+
+<!-- Plans -->
+@defer (on viewport) {
+  <section class="py-20 md:py-28" aria-labelledby="plans-title">
+    <div class="mx-auto max-w-7xl px-4 md:px-6">
+      <div id="plans-title" class="mb-12">
+        <bs-section-title solid="Sin" outline="matrícula" lead="Primera clase gratis. Después eliges: pagas por clase o te quedas con un plan mensual." />
+      </div>
+      <bs-plan-list />
+    </div>
+  </section>
+} @placeholder {
+  <div class="h-[900px]"></div>
+}
+
+<!-- Opening hours + location -->
+@defer (on viewport) {
+  <section class="bg-bone py-20 text-ink md:py-24" aria-labelledby="hours-title">
+    <div class="mx-auto grid max-w-7xl gap-12 px-4 md:grid-cols-2 md:px-6">
+      <div>
+        <h2 id="hours-title" class="type-display text-[clamp(2.75rem,11vw,6rem)]">Horario de atención</h2>
+        <dl class="mt-8 divide-y divide-ink/15 border-y border-ink/15">
+          @for (h of gym.hours; track h.days) {
+            <div class="flex items-baseline justify-between py-3">
+              <dt class="font-semibold">{{ h.days }}</dt>
+              <dd class="font-punch text-2xl font-extrabold italic" [class.text-ink/40]="h.time === 'Cerrado'">{{ h.time }}</dd>
+            </div>
+          }
+        </dl>
+      </div>
+      <div class="flex flex-col justify-end gap-4">
+        <p class="flex items-start gap-3 text-lg"><bs-icon name="pin" class="mt-1" /> {{ gym.address }}</p>
+        <div class="flex flex-wrap gap-3">
+          <a [href]="gym.mapsUrl" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-ink px-5 py-3 font-punch text-xl font-extrabold text-lime italic uppercase hover:bg-iron">Cómo llegar</a>
+          <a [href]="'tel:' + gym.phone.replaceAll(' ', '')" class="inline-flex items-center gap-2 border-2 border-ink px-5 py-2.5 font-punch text-xl font-bold italic uppercase hover:bg-ink hover:text-bone">Llamar</a>
+        </div>
+      </div>
+    </div>
+  </section>
+} @placeholder {
+  <div class="h-[520px] bg-bone"></div>
+}
+
+<!-- Campaign wall -->
+@defer (on viewport) {
+  <section class="py-20 md:py-24" aria-labelledby="wall-title">
+    <div class="mx-auto flex max-w-7xl items-end justify-between gap-6 px-4 md:px-6">
+      <h2 id="wall-title" class="type-display text-[clamp(2.25rem,8vw,4.5rem)]">No + excusas</h2>
+      <a [href]="gym.instagram" target="_blank" rel="noopener" class="shrink-0 pb-2 font-semibold text-lime underline-offset-4 hover:underline">Síguenos en Instagram</a>
+    </div>
+    <ul class="scrollbar-none mt-8 flex snap-x gap-3 overflow-x-auto px-4 md:px-6">
+      @for (p of posters; track p.src) {
+        <li class="w-[62vw] max-w-[300px] shrink-0 snap-start">
+          <img [src]="p.src" [alt]="p.alt" width="420" height="525" loading="lazy" decoding="async" class="aspect-[4/5] w-full object-cover" />
+        </li>
+      }
+    </ul>
+  </section>
+} @placeholder {
+  <div class="h-[560px]"></div>
+}

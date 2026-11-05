@@ -1,0 +1,15 @@
+/* The one orchestrated moment: headline lines punch in on load. */
+.hero-line {
+  animation: punch 700ms var(--ease-snap) both;
+}
+@keyframes punch {
+  from {
+    transform: translateX(-6%);
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
