@@ -16,12 +16,12 @@ const PAD_B = 18;
   imports: [RouterLink, PlateMeter, Status],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h1 class="type-display text-[clamp(2.5rem,8vw,4.5rem)]">Resumen</h1>
-    @if (error()) { <p class="mt-4 border-l-4 border-blood bg-blood/10 p-4">{{ error() }}</p> }
+    <h1 class="page-title type-display">Resumen</h1>
+    @if (error()) { <p class="mt-4 rounded-[var(--radius-field)] border-l-4 border-blood bg-blood/10 p-4">{{ error() }}</p> }
 
     @if (data(); as d) {
       <!-- Headline numbers -->
-      <dl class="mt-6 grid grid-cols-2 gap-px bg-steel lg:grid-cols-4">
+      <dl class="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-[var(--radius-card)] bg-steel lg:grid-cols-4">
         <div class="bg-iron p-4 md:p-5">
           <dt class="text-sm text-ash">Ventas del mes</dt>
           <dd class="mt-1 font-punch text-3xl font-extrabold italic md:text-4xl">{{ money(d.revenueMonth) }}</dd>
@@ -77,7 +77,7 @@ const PAD_B = 18;
               }
             </svg>
             @if (hover(); as h) {
-              <div class="pointer-events-none absolute top-0 -translate-x-1/2 border border-steel bg-ink px-2.5 py-1.5 text-xs whitespace-nowrap shadow-[4px_4px_0_0_#000]"
+              <div class="pointer-events-none absolute top-0 -translate-x-1/2 rounded-lg border border-steel bg-ink px-2.5 py-1.5 text-xs whitespace-nowrap"
                 [style.left.%]="((h.x + h.w / 2) / W) * 100">
                 <span class="block text-ash">{{ h.label }}</span>
                 <span class="font-semibold text-bone">{{ money(h.amount) }}</span> · {{ h.orders }} {{ h.orders === 1 ? 'pago' : 'pagos' }}
@@ -104,7 +104,7 @@ const PAD_B = 18;
             @for (x of disciplines(); track x.name) {
               <li>
                 <div class="mb-1 flex justify-between text-sm"><span>{{ x.name }}</span><span class="font-semibold">{{ x.bookings }}</span></div>
-                <div class="h-2.5 bg-steel"><div class="h-full rounded-r-[4px] bg-lime-dim" [style.width.%]="x.pct"></div></div>
+                <div class="h-2.5 rounded-full bg-steel"><div class="h-full rounded-full bg-lime-dim" [style.width.%]="x.pct"></div></div>
               </li>
             }
           </ul>
@@ -143,7 +143,7 @@ const PAD_B = 18;
         }
       </ul>
     } @else if (!error()) {
-      <div class="mt-6 grid grid-cols-2 gap-px lg:grid-cols-4">@for (i of [1, 2, 3, 4]; track i) { <div class="h-28 animate-pulse bg-iron"></div> }</div>
+      <div class="mt-6 grid grid-cols-2 gap-px lg:grid-cols-4">@for (i of [1, 2, 3, 4]; track i) { <div class="h-28 animate-pulse rounded-[var(--radius-card)] bg-iron"></div> }</div>
     }
   `,
 })

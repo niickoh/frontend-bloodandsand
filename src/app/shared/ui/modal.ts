@@ -9,14 +9,17 @@ import { Icon } from './icon';
   template: `
     <dialog
       #dlg
-      class="sheet m-0 mt-auto max-h-[92dvh] w-full max-w-none overflow-y-auto border-t-4 border-lime bg-iron p-0 text-bone backdrop:bg-ink/75 md:m-auto md:max-w-xl md:border md:border-steel md:border-t-lime"
+      class="sheet m-0 mt-auto max-h-[92dvh] w-full max-w-none overflow-y-auto rounded-t-3xl border border-b-0 border-steel bg-iron p-0 text-bone backdrop:bg-ink/75 backdrop:backdrop-blur-sm md:m-auto md:max-w-xl md:rounded-3xl md:border-b"
       [attr.aria-labelledby]="'dlg-' + uid"
       (close)="closed.emit()"
       (click)="backdrop($event)"
     >
-      <div class="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-steel bg-iron px-5 py-4">
-        <h2 [id]="'dlg-' + uid" class="font-punch text-2xl font-extrabold italic">{{ title() }}</h2>
-        <button type="button" class="p-1 text-bone/60 hover:text-bone" (click)="dlg.close()" aria-label="Cerrar"><bs-icon name="x" /></button>
+      <div class="sticky top-0 z-10 border-b border-steel bg-iron px-5 pt-2.5 pb-4">
+        <span class="mx-auto mb-3 block h-1 w-10 rounded-full bg-steel md:hidden" aria-hidden="true"></span>
+        <div class="flex items-center justify-between gap-4">
+        <h2 [id]="'dlg-' + uid" class="text-xl font-bold">{{ title() }}</h2>
+        <button type="button" class="grid size-10 place-items-center rounded-full bg-iron-2 text-bone/70 hover:text-bone" (click)="dlg.close()" aria-label="Cerrar"><bs-icon name="x" /></button>
+        </div>
       </div>
       <div class="px-5 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
         <ng-content />

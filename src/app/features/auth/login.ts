@@ -12,7 +12,7 @@ import { FieldError, FormMessage } from '../../shared/ui/field-error';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="mx-auto grid max-w-6xl gap-10 px-4 pt-8 pb-28 md:grid-cols-[1fr_1fr] md:px-6 md:pt-14">
-      <div class="relative hidden overflow-hidden md:block">
+      <div class="relative hidden overflow-hidden rounded-[1.5rem] md:block">
         <img src="img/hero-800.webp" alt="" width="670" height="830" class="h-full w-full object-cover opacity-60" />
         <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent"></div>
         <p class="absolute bottom-6 left-6 text-[clamp(3rem,6vw,5.5rem)]">
@@ -22,19 +22,19 @@ import { FieldError, FormMessage } from '../../shared/ui/field-error';
       </div>
 
       <div class="md:py-6">
-        <h1 class="text-[clamp(3rem,13vw,5.5rem)]">
+        <h1 class="page-title">
           <span class="type-display block">{{ mode() === 'login' ? 'Ingresa' : 'Crea tu' }}</span>
           <span class="type-outline block">{{ mode() === 'login' ? 'a tu cuenta' : 'cuenta' }}</span>
         </h1>
         @if (reason()) {
-          <p class="mt-4 border-l-4 border-lime bg-iron p-3 text-sm">{{ reason() }}</p>
+          <p class="mt-4 rounded-[var(--radius-field)] border-l-4 border-lime bg-iron p-3 text-sm">{{ reason() }}</p>
         }
 
-        <div role="tablist" class="mt-8 grid grid-cols-2 border-2 border-steel" aria-label="Ingresar o crear cuenta">
+        <div role="tablist" class="mt-8 grid grid-cols-2 rounded-full border border-steel p-1" aria-label="Ingresar o crear cuenta">
           <button type="button" role="tab" [attr.aria-selected]="mode() === 'login'" (click)="switchTo('login')"
-            class="py-2.5 font-punch text-lg font-bold italic uppercase" [class]="mode() === 'login' ? 'bg-bone text-ink' : 'text-bone/70'">Ingresar</button>
+            class="min-h-10 rounded-full text-sm font-semibold" [class]="mode() === 'login' ? 'bg-lime text-ink' : 'text-bone/70'">Ingresar</button>
           <button type="button" role="tab" [attr.aria-selected]="mode() === 'register'" (click)="switchTo('register')"
-            class="py-2.5 font-punch text-lg font-bold italic uppercase" [class]="mode() === 'register' ? 'bg-bone text-ink' : 'text-bone/70'">Crear cuenta</button>
+            class="min-h-10 rounded-full text-sm font-semibold" [class]="mode() === 'register' ? 'bg-lime text-ink' : 'text-bone/70'">Crear cuenta</button>
         </div>
 
         <form class="mt-6 grid gap-5" (ngSubmit)="submit()" novalidate>
@@ -62,7 +62,7 @@ import { FieldError, FormMessage } from '../../shared/ui/field-error';
             <bs-field-error [error]="form.error('password')" />
           </label>
           <bs-form-message [message]="form.message()" />
-          <button type="submit" class="tape !py-3.5 !text-2xl" [disabled]="form.busy()">
+          <button type="submit" class="tape tape-lg" [disabled]="form.busy()">
             @if (form.busy()) { Un momento… } @else { {{ mode() === 'login' ? 'Ingresar' : 'Crear cuenta' }} }
           </button>
         </form>

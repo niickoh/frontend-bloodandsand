@@ -20,15 +20,15 @@ import { AdminApi } from './admin-api';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-wrap items-end justify-between gap-4">
-      <h1 class="type-display text-[clamp(2.5rem,8vw,4.5rem)]">Clases</h1>
-      <button type="button" class="tape !text-lg" (click)="openCreate()"><bs-icon name="plus" /> Clase puntual</button>
+      <h1 class="page-title type-display">Clases</h1>
+      <button type="button" class="tape" (click)="openCreate()"><bs-icon name="plus" /> Clase puntual</button>
     </div>
     <p class="mt-2 max-w-[60ch] text-sm text-bone/70">Las clases se generan solas desde el horario semanal. Aquí editas una clase concreta (coach, hora, cupos) o la cancelas avisando a los inscritos.</p>
 
     <div class="mt-6 flex flex-wrap items-center gap-3">
-      <button type="button" class="border-2 border-steel p-2 hover:border-ash" (click)="shift(-1)" aria-label="Día anterior"><bs-icon name="chevron-left" /></button>
+      <button type="button" class="grid size-11 place-items-center rounded-full border border-steel hover:border-ash" (click)="shift(-1)" aria-label="Día anterior"><bs-icon name="chevron-left" /></button>
       <input type="date" class="field !w-auto" [value]="date()" (change)="date.set($any($event.target).value)" aria-label="Fecha" />
-      <button type="button" class="border-2 border-steel p-2 hover:border-ash" (click)="shift(1)" aria-label="Día siguiente"><bs-icon name="chevron-right" /></button>
+      <button type="button" class="grid size-11 place-items-center rounded-full border border-steel hover:border-ash" (click)="shift(1)" aria-label="Día siguiente"><bs-icon name="chevron-right" /></button>
       <button type="button" class="text-sm text-lime underline underline-offset-4" (click)="date.set(today)">Hoy</button>
       <select class="field !w-auto" [ngModel]="coach()" (ngModelChange)="coach.set(+$event)" aria-label="Filtrar por coach">
         <option [ngValue]="0">Todos los coaches</option>
@@ -38,7 +38,7 @@ import { AdminApi } from './admin-api';
     <h2 class="mt-6 mb-2 font-semibold">{{ longDate(date()) }}</h2>
 
     @if (loading()) {
-      <div class="h-48 animate-pulse bg-iron"></div>
+      <div class="h-48 animate-pulse rounded-[var(--radius-card)] bg-iron"></div>
     } @else {
       <ul class="divide-y divide-steel border-y border-steel">
         @for (s of sessions(); track s.id) {
@@ -54,8 +54,8 @@ import { AdminApi } from './admin-api';
             <span class="col-start-2 flex gap-1.5 sm:col-start-auto">
               <a [routerLink]="['/admin/clases', s.id]" class="border-2 border-steel px-3 py-1.5 text-sm font-semibold hover:border-ash">Inscritos</a>
               @if (s.status === 'scheduled') {
-                <button type="button" class="border-2 border-steel p-1.5 hover:border-ash" (click)="openEdit(s)" [attr.aria-label]="'Editar ' + s.discipline + ' ' + s.start"><bs-icon name="edit" [size]="18" /></button>
-                <button type="button" class="border-2 border-steel p-1.5 hover:border-blood hover:text-blood" (click)="openCancel(s)" [attr.aria-label]="'Cancelar ' + s.discipline + ' ' + s.start"><bs-icon name="x" [size]="18" /></button>
+                <button type="button" class="grid size-10 place-items-center rounded-full border border-steel hover:border-ash" (click)="openEdit(s)" [attr.aria-label]="'Editar ' + s.discipline + ' ' + s.start"><bs-icon name="edit" [size]="18" /></button>
+                <button type="button" class="grid size-10 place-items-center rounded-full border border-steel hover:border-blood hover:text-blood" (click)="openCancel(s)" [attr.aria-label]="'Cancelar ' + s.discipline + ' ' + s.start"><bs-icon name="x" [size]="18" /></button>
               }
             </span>
           </li>

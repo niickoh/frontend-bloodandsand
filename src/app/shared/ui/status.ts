@@ -23,7 +23,7 @@ const LABELS: Record<string, [string, string]> = {
   selector: 'bs-status',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'inline-block' },
-  template: `<span class="inline-block border px-1.5 py-px text-xs font-semibold whitespace-nowrap" [class]="cls()">{{ label() }}</span>`,
+  template: `<span class="inline-block rounded-full border px-2 py-0.5 text-xs font-semibold whitespace-nowrap" [class]="cls()">{{ label() }}</span>`,
 })
 export class Status {
   readonly value = input.required<string>();

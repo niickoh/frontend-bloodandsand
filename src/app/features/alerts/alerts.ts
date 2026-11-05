@@ -13,15 +13,15 @@ type PrefKey = 'reminders' | 'changes' | 'promos';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="mx-auto max-w-3xl px-4 pt-8 pb-28 md:px-6 md:pt-12">
-      <h1 class="text-[clamp(3rem,13vw,6.5rem)]">
+      <h1 class="page-title">
         <span class="type-display block">Avisos</span>
         <span class="type-outline block">y app</span>
       </h1>
 
       <!-- Notifications status -->
-      <div class="mt-10 border border-steel bg-iron p-5 md:p-6">
+      <div class="card mt-10 p-5 md:p-6">
         <div class="flex items-start gap-4">
-          <span class="grid size-11 shrink-0 place-items-center" [class]="granted() ? 'bg-lime text-ink' : 'bg-steel text-bone'"><bs-icon name="bell" /></span>
+          <span class="grid size-11 shrink-0 place-items-center rounded-full" [class]="granted() ? 'bg-lime text-ink' : 'bg-steel text-bone'"><bs-icon name="bell" /></span>
           <div class="flex-1">
             <h2 class="font-punch text-2xl font-extrabold italic">{{ statusTitle() }}</h2>
             <p class="mt-1 text-bone/75">{{ statusBody() }}</p>
@@ -39,7 +39,7 @@ type PrefKey = 'reminders' | 'changes' | 'promos';
 
       <!-- Install -->
       @if (!n.isStandalone) {
-        <div class="mt-6 border border-steel p-5 md:p-6">
+        <div class="card mt-6 p-5 md:p-6">
           <h2 class="font-punch text-2xl font-extrabold italic">Instala la app</h2>
           @if (n.isIos) {
             <p class="mt-1 text-bone/75">En iPhone y iPad las notificaciones solo funcionan con la app instalada (iOS 16.4 o superior).</p>
@@ -68,7 +68,7 @@ type PrefKey = 'reminders' | 'changes' | 'promos';
                 <span class="block text-sm text-ash">{{ p.hint }}</span>
               </span>
               <input type="checkbox" class="peer sr-only" [checked]="prefs()[p.key]" (change)="toggle(p.key)" />
-              <span class="relative h-7 w-12 shrink-0 bg-steel transition-colors peer-checked:bg-lime peer-focus-visible:outline-3 peer-focus-visible:outline-lime after:absolute after:top-1 after:left-1 after:size-5 after:bg-bone after:transition-transform peer-checked:after:translate-x-5 peer-checked:after:bg-ink" aria-hidden="true"></span>
+              <span class="relative h-7 w-12 shrink-0 rounded-full bg-steel transition-colors peer-checked:bg-lime peer-focus-visible:outline-3 peer-focus-visible:outline-lime after:absolute after:top-1 after:left-1 after:size-5 after:rounded-full after:bg-bone after:transition-transform peer-checked:after:translate-x-5 peer-checked:after:bg-ink" aria-hidden="true"></span>
             </label>
           </li>
         }

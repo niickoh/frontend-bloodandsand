@@ -7,7 +7,7 @@ import { PlanList } from '../../shared/plan-list';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="mx-auto max-w-7xl px-4 pt-8 pb-28 md:px-6 md:pt-12">
-      <h1 class="text-[clamp(3rem,13vw,6.5rem)]">
+      <h1 class="page-title">
         <span class="type-display block">Planes</span>
         <span class="type-outline block">y precios</span>
       </h1>

@@ -20,17 +20,17 @@ import { Status } from '../../shared/ui/status';
   template: `
     <section class="mx-auto max-w-4xl px-4 pt-8 pb-28 md:px-6 md:pt-12">
       @if (auth.user(); as u) {
-        <h1 class="text-[clamp(3rem,13vw,6.5rem)]">
+        <h1 class="page-title">
           <span class="type-display block">Mi</span>
           <span class="type-outline block">cuenta</span>
         </h1>
         <p class="mt-3 text-bone/70">{{ u.email }} · {{ roleLabel[u.role] }}</p>
 
         <div class="mt-8 flex flex-wrap gap-2">
-          @if (auth.isAdmin()) { <a routerLink="/admin" class="tape !text-lg"><bs-icon name="chart" /> Panel de admin</a> }
-          @if (auth.isStaff()) { <a routerLink="/coach" class="tape-ghost !text-lg"><bs-icon name="calendar" /> Mis clases</a> }
-          @if (!auth.isStaff()) { <a routerLink="/mis-reservas" class="tape-ghost !text-lg"><bs-icon name="ticket" /> Mis reservas</a> }
-          <a routerLink="/avisos" class="tape-ghost !text-lg"><bs-icon name="bell" /> Avisos</a>
+          @if (auth.isAdmin()) { <a routerLink="/admin" class="tape"><bs-icon name="chart" /> Panel de admin</a> }
+          @if (auth.isStaff()) { <a routerLink="/coach" class="tape-ghost"><bs-icon name="calendar" /> Mis clases</a> }
+          @if (!auth.isStaff()) { <a routerLink="/mis-reservas" class="tape-ghost"><bs-icon name="ticket" /> Mis reservas</a> }
+          <a routerLink="/avisos" class="tape-ghost"><bs-icon name="bell" /> Avisos</a>
         </div>
 
         <div class="mt-12 grid gap-10 md:grid-cols-2">

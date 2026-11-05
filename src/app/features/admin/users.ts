@@ -20,8 +20,8 @@ const PAGE = 50;
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-wrap items-end justify-between gap-4">
-      <h1 class="type-display text-[clamp(2.5rem,8vw,4.5rem)]">Usuarios</h1>
-      <button type="button" class="tape !text-lg" (click)="openCreate()"><bs-icon name="plus" /> Nuevo usuario</button>
+      <h1 class="page-title type-display">Usuarios</h1>
+      <button type="button" class="tape" (click)="openCreate()"><bs-icon name="plus" /> Nuevo usuario</button>
     </div>
 
     <div class="mt-6 flex flex-wrap gap-3">
@@ -30,10 +30,10 @@ const PAGE = 50;
         <bs-icon name="search" [size]="18" class="absolute top-3.5 left-3 text-ash" />
         <input class="field !pl-10" placeholder="Nombre, correo o teléfono" [ngModel]="q()" (ngModelChange)="search($event)" />
       </label>
-      <div role="radiogroup" aria-label="Perfil" class="flex border-2 border-steel">
+      <div role="radiogroup" aria-label="Perfil" class="flex rounded-full border border-steel p-1">
         @for (r of roles; track r.id) {
           <button type="button" role="radio" [attr.aria-checked]="role() === r.id" (click)="role.set(r.id); page.set(0)"
-            class="px-3 py-2 text-sm font-semibold" [class]="role() === r.id ? 'bg-bone text-ink' : 'text-bone/70'">{{ r.label }}</button>
+            class="min-h-9 rounded-full px-3 text-sm font-semibold" [class]="role() === r.id ? 'bg-lime text-ink' : 'text-bone/70'">{{ r.label }}</button>
         }
       </div>
     </div>
@@ -57,9 +57,9 @@ const PAGE = 50;
     </ul>
     @if (total() > PAGE) {
       <div class="mt-4 flex items-center gap-3">
-        <button type="button" class="tape-ghost !px-3 !text-base" [disabled]="page() === 0" (click)="page.update((p) => p - 1)">Anterior</button>
+        <button type="button" class="tape-ghost tape-sm" [disabled]="page() === 0" (click)="page.update((p) => p - 1)">Anterior</button>
         <span class="text-sm text-ash">Página {{ page() + 1 }} de {{ pages() }}</span>
-        <button type="button" class="tape-ghost !px-3 !text-base" [disabled]="page() + 1 >= pages()" (click)="page.update((p) => p + 1)">Siguiente</button>
+        <button type="button" class="tape-ghost tape-sm" [disabled]="page() + 1 >= pages()" (click)="page.update((p) => p + 1)">Siguiente</button>
       </div>
     }
 

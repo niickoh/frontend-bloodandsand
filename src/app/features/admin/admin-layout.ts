@@ -16,7 +16,7 @@ import { Icon, IconName } from '../../shared/ui/icon';
             [routerLink]="l.to"
             routerLinkActive="!bg-lime !text-ink"
             [routerLinkActiveOptions]="{ exact: l.to === '/admin' }"
-            class="flex shrink-0 items-center gap-2.5 px-3 py-2 text-sm font-semibold text-bone/75 hover:bg-iron hover:text-bone"
+            class="flex min-h-10 shrink-0 items-center gap-2.5 rounded-full px-3.5 text-sm font-semibold text-bone/75 hover:bg-iron hover:text-bone md:rounded-[var(--radius-field)]"
           >
             <bs-icon [name]="l.icon" [size]="18" /> {{ l.label }}
           </a>

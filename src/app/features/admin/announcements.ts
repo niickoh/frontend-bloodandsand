@@ -12,7 +12,7 @@ const AUDIENCE = { all: 'Todos', students: 'Alumnos e invitados', coaches: 'Coac
   imports: [FormsModule, FieldError, FormMessage],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h1 class="type-display text-[clamp(2.5rem,8vw,4.5rem)]">Avisos push</h1>
+    <h1 class="page-title type-display">Avisos push</h1>
     <p class="mt-2 max-w-[60ch] text-sm text-bone/70">Llega como notificación a cada dispositivo con los avisos activados, aunque la app esté cerrada. Úsalo para novedades importantes: cada aviso innecesario hace que la gente los desactive.</p>
 
     <div class="mt-8 grid gap-10 lg:grid-cols-[1fr_1fr]">
@@ -43,7 +43,7 @@ const AUDIENCE = { all: 'Todos', students: 'Alumnos e invitados', coaches: 'Coac
 
       <div>
         <p class="mb-2 text-sm text-ash">Vista previa</p>
-        <div class="flex gap-3 bg-bone p-4 text-ink shadow-[6px_6px_0_0_#000]">
+        <div class="flex gap-3 rounded-2xl bg-bone p-4 text-ink">
           <img src="icons/icon-96x96.png" alt="" width="40" height="40" class="size-10" />
           <div class="min-w-0">
             <p class="font-semibold">{{ draft.title || 'Título del aviso' }}</p>

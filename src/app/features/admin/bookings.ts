@@ -18,8 +18,8 @@ const PAGE = 50;
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-wrap items-end justify-between gap-4">
-      <h1 class="type-display text-[clamp(2.5rem,8vw,4.5rem)]">Reservas</h1>
-      <a routerLink="/admin/clases" class="tape !text-lg"><bs-icon name="plus" /> Nueva reserva</a>
+      <h1 class="page-title type-display">Reservas</h1>
+      <a routerLink="/admin/clases" class="tape"><bs-icon name="plus" /> Nueva reserva</a>
     </div>
     <p class="mt-2 text-sm text-bone/70">Para crear una reserva elige la clase y usa «Agregar persona».</p>
 
@@ -77,9 +77,9 @@ const PAGE = 50;
     </div>
     @if (total() > PAGE) {
       <div class="mt-4 flex items-center gap-3">
-        <button type="button" class="tape-ghost !px-3 !text-base" [disabled]="page() === 0" (click)="page.update((p) => p - 1)">Anterior</button>
+        <button type="button" class="tape-ghost tape-sm" [disabled]="page() === 0" (click)="page.update((p) => p - 1)">Anterior</button>
         <span class="text-sm text-ash">Página {{ page() + 1 }} de {{ pages() }}</span>
-        <button type="button" class="tape-ghost !px-3 !text-base" [disabled]="page() + 1 >= pages()" (click)="page.update((p) => p + 1)">Siguiente</button>
+        <button type="button" class="tape-ghost tape-sm" [disabled]="page() + 1 >= pages()" (click)="page.update((p) => p + 1)">Siguiente</button>
       </div>
     }
   `,

@@ -18,10 +18,10 @@ const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-wrap items-end justify-between gap-4">
-      <h1 class="type-display text-[clamp(2.5rem,8vw,4.5rem)]">Horario semanal</h1>
+      <h1 class="page-title type-display">Horario semanal</h1>
       <div class="flex gap-2">
-        <button type="button" class="tape-ghost !text-lg" (click)="regenerate()" [disabled]="busy()">Generar clases</button>
-        <button type="button" class="tape !text-lg" (click)="openCreate(1)"><bs-icon name="plus" /> Agregar</button>
+        <button type="button" class="tape-ghost" (click)="regenerate()" [disabled]="busy()">Generar clases</button>
+        <button type="button" class="tape" (click)="openCreate(1)"><bs-icon name="plus" /> Agregar</button>
       </div>
     </div>
     <p class="mt-2 max-w-[62ch] text-sm text-bone/70">
@@ -38,7 +38,7 @@ const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
           <ul class="mt-2 space-y-1.5">
             @for (t of day.items; track t.id) {
               <li>
-                <button type="button" class="grid w-full grid-cols-[3.5rem_1fr_auto] items-center gap-2 bg-iron px-3 py-2 text-left hover:bg-steel" [class.opacity-50]="!t.active" (click)="openEdit(t)">
+                <button type="button" class="grid w-full grid-cols-[3.5rem_1fr_auto] items-center gap-2 rounded-xl bg-iron px-3 py-2 text-left hover:bg-iron-2" [class.opacity-50]="!t.active" (click)="openEdit(t)">
                   <span class="type-display text-xl">{{ t.startTime }}</span>
                   <span class="min-w-0">
                     <span class="block truncate font-semibold">{{ t.discipline }}</span>

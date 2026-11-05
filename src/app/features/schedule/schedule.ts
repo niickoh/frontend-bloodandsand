@@ -13,7 +13,7 @@ const TONES = ['border-l-lime', 'border-l-bone', 'border-l-pink', 'border-l-ash'
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="mx-auto max-w-7xl px-4 pt-8 pb-28 md:px-6 md:pt-12">
-      <h1 class="text-[clamp(3rem,13vw,6.5rem)]">
+      <h1 class="page-title">
         <span class="type-display block">Horario</span>
         <span class="type-outline block">de clases</span>
       </h1>
@@ -26,8 +26,8 @@ const TONES = ['border-l-lime', 'border-l-bone', 'border-l-pink', 'border-l-ash'
             role="radio"
             [attr.aria-checked]="filter() === f.id"
             (click)="filter.set(f.id)"
-            class="border-2 px-4 py-1.5 font-punch text-lg font-bold italic uppercase transition-colors"
-            [class]="filter() === f.id ? 'border-bone bg-bone text-ink' : 'border-steel text-bone/75 hover:border-ash'"
+            class="chip"
+            [class]="filter() === f.id ? 'border-lime bg-lime text-ink' : 'border-steel text-bone/80 hover:border-ash'"
           >
             {{ f.label }}
           </button>
@@ -51,7 +51,7 @@ const TONES = ['border-l-lime', 'border-l-bone', 'border-l-pink', 'border-l-ash'
 
       @if (!catalog.timetable().length) {
         <div class="mt-10 grid gap-3 md:grid-cols-3 lg:grid-cols-6" aria-busy="true">
-          @for (i of [1, 2, 3, 4, 5, 6]; track i) { <div class="h-64 animate-pulse bg-iron"></div> }
+          @for (i of [1, 2, 3, 4, 5, 6]; track i) { <div class="h-64 animate-pulse rounded-[var(--radius-card)] bg-iron"></div> }
         </div>
       }
       <div class="mt-4 grid gap-6 md:mt-10 md:grid-cols-3 lg:gap-3" [class]="columns().length > 6 ? 'lg:grid-cols-7' : 'lg:grid-cols-6'">
@@ -66,7 +66,7 @@ const TONES = ['border-l-lime', 'border-l-bone', 'border-l-pink', 'border-l-ash'
                   <a
                     routerLink="/reservar"
                     [queryParams]="{ d: slugOf(c.disciplineId), fecha: col.date }"
-                    class="block border-l-4 bg-iron px-3 py-2.5 transition-colors hover:bg-steel"
+                    class="block rounded-xl border-l-4 bg-iron px-3 py-2.5 transition-colors hover:bg-iron-2"
                     [class]="tone(c.disciplineId)"
                   >
                     <span class="type-display block text-2xl">{{ c.startTime }}</span>

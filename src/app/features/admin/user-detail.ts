@@ -24,7 +24,7 @@ import { AdminApi } from './admin-api';
     @if (user(); as u) {
       <div class="mt-4 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 class="type-display text-[clamp(2.25rem,7vw,4rem)]">{{ u.fullName }}</h1>
+          <h1 class="page-title type-display">{{ u.fullName }}</h1>
           <p class="text-bone/70">{{ u.email }} · desde {{ date(u.createdAt) }}{{ u.lastLoginAt ? ' · último ingreso ' + date(u.lastLoginAt) : '' }}</p>
         </div>
         <bs-status [value]="u.active ? 'active' : 'inactive'" />
@@ -67,7 +67,7 @@ import { AdminApi } from './admin-api';
           <section>
             <div class="flex items-center justify-between gap-3">
               <h2 class="font-punch text-2xl font-extrabold italic">Planes</h2>
-              <button type="button" class="tape !px-3 !py-1 !text-base" (click)="openAssign()"><bs-icon name="plus" [size]="18" /> Asignar plan</button>
+              <button type="button" class="tape tape-sm" (click)="openAssign()"><bs-icon name="plus" [size]="18" /> Asignar plan</button>
             </div>
             <ul class="mt-3 divide-y divide-steel border-y border-steel text-sm">
               @for (m of memberships(); track m.id) {
@@ -121,7 +121,7 @@ import { AdminApi } from './admin-api';
         </div>
       }
     } @else if (error()) {
-      <p class="mt-6 border-l-4 border-blood bg-blood/10 p-4">{{ error() }}</p>
+      <p class="mt-6 rounded-[var(--radius-field)] border-l-4 border-blood bg-blood/10 p-4">{{ error() }}</p>
     }
 
     <bs-modal title="Nueva contraseña" [open]="modal() === 'password'" (closed)="modal.set(null)">

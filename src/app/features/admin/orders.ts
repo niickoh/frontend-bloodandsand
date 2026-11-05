@@ -19,7 +19,7 @@ const PAGE = 50;
   imports: [FormsModule, RouterLink, Icon, Modal, Status, FormMessage],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h1 class="type-display text-[clamp(2.5rem,8vw,4.5rem)]">Pagos</h1>
+    <h1 class="page-title type-display">Pagos</h1>
 
     <div class="mt-6 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
       <label class="relative">
@@ -68,9 +68,9 @@ const PAGE = 50;
     </div>
     @if (total() > PAGE) {
       <div class="mt-4 flex items-center gap-3">
-        <button type="button" class="tape-ghost !px-3 !text-base" [disabled]="page() === 0" (click)="page.update((p) => p - 1)">Anterior</button>
+        <button type="button" class="tape-ghost tape-sm" [disabled]="page() === 0" (click)="page.update((p) => p - 1)">Anterior</button>
         <span class="text-sm text-ash">Página {{ page() + 1 }} de {{ pages() }}</span>
-        <button type="button" class="tape-ghost !px-3 !text-base" [disabled]="page() + 1 >= pages()" (click)="page.update((p) => p + 1)">Siguiente</button>
+        <button type="button" class="tape-ghost tape-sm" [disabled]="page() + 1 >= pages()" (click)="page.update((p) => p + 1)">Siguiente</button>
       </div>
     }
 

@@ -13,17 +13,17 @@ import { Icon } from './icon';
   template: `
     @for (t of toasts.toasts(); track t.id) {
       <div
-        class="toast pointer-events-auto flex w-full max-w-sm items-start gap-3 border-l-4 bg-bone px-4 py-3 text-ink shadow-[6px_6px_0_0_#000]"
+        class="toast pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-2xl border-l-4 bg-bone px-4 py-3 text-ink shadow-[0_12px_32px_-8px_rgba(0,0,0,0.6)]"
         [class.border-lime]="t.kind === 'ok'"
         [class.border-ink]="t.kind === 'info'"
         [class.border-blood]="t.kind === 'error'"
         role="status"
       >
-        <span class="mt-0.5 grid size-6 place-items-center" [class]="t.kind === 'error' ? 'bg-blood text-bone' : 'bg-ink text-lime'">
+        <span class="mt-0.5 grid size-6 place-items-center rounded-full" [class]="t.kind === 'error' ? 'bg-blood text-bone' : 'bg-ink text-lime'">
           <bs-icon [name]="t.kind === 'error' ? 'x' : t.kind === 'info' ? 'clock' : 'check'" [size]="14" />
         </span>
         <div class="min-w-0 flex-1">
-          <p class="font-punch text-lg leading-tight font-extrabold italic">{{ t.title }}</p>
+          <p class="leading-tight font-bold">{{ t.title }}</p>
           @if (t.body) {
             <p class="text-sm leading-snug text-ink/75">{{ t.body }}</p>
           }

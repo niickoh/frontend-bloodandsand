@@ -18,7 +18,7 @@ export class FieldError {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (message()) {
-      <p class="border-l-4 border-blood bg-blood/10 p-3 text-sm" role="alert">{{ message() }}</p>
+      <p class="rounded-[var(--radius-field)] border-l-4 border-blood bg-blood/10 p-3 text-sm" role="alert">{{ message() }}</p>
     }
   `,
 })

@@ -20,12 +20,12 @@ type PlanDraft = Omit<Plan, 'id' | 'perks'> & { id?: number; perksText: string; 
   imports: [FormsModule, Icon, Modal, Status, FieldError, FormMessage],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h1 class="type-display text-[clamp(2.5rem,8vw,4.5rem)]">Disciplinas y planes</h1>
+    <h1 class="page-title type-display">Disciplinas y planes</h1>
 
     <section class="mt-8">
       <div class="flex items-center justify-between gap-3">
         <h2 class="font-punch text-2xl font-extrabold italic">Disciplinas</h2>
-        <button type="button" class="tape !px-3 !py-1 !text-base" (click)="editDiscipline()"><bs-icon name="plus" [size]="18" /> Nueva</button>
+        <button type="button" class="tape tape-sm" (click)="editDiscipline()"><bs-icon name="plus" [size]="18" /> Nueva</button>
       </div>
       <ul class="mt-3 divide-y divide-steel border-y border-steel">
         @for (d of disciplines(); track d.id) {
@@ -44,7 +44,7 @@ type PlanDraft = Omit<Plan, 'id' | 'perks'> & { id?: number; perksText: string; 
     <section class="mt-12">
       <div class="flex items-center justify-between gap-3">
         <h2 class="font-punch text-2xl font-extrabold italic">Planes</h2>
-        <button type="button" class="tape !px-3 !py-1 !text-base" (click)="editPlan()"><bs-icon name="plus" [size]="18" /> Nuevo</button>
+        <button type="button" class="tape tape-sm" (click)="editPlan()"><bs-icon name="plus" [size]="18" /> Nuevo</button>
       </div>
       <ul class="mt-3 divide-y divide-steel border-y border-steel">
         @for (p of plans(); track p.id) {

@@ -20,7 +20,7 @@ import { Icon } from '../../shared/ui/icon';
       @if (order(); as o) {
         @switch (o.status) {
           @case ('paid') {
-            <span class="grid size-14 place-items-center bg-lime text-ink"><bs-icon name="check" [size]="30" /></span>
+            <span class="grid size-14 place-items-center rounded-full bg-lime text-ink"><bs-icon name="check" [size]="30" /></span>
             <h1 class="mt-6 text-[clamp(3.5rem,16vw,7.5rem)]">
               <span class="type-display block">Pago</span>
               <span class="type-outline block">recibido</span>
@@ -37,12 +37,12 @@ import { Icon } from '../../shared/ui/icon';
             </div>
           }
           @case ('pending') {
-            <h1 class="text-[clamp(3rem,13vw,6rem)]"><span class="type-display block">Confirmando</span><span class="type-outline block">tu pago</span></h1>
+            <h1 class="page-title"><span class="type-display block">Confirmando</span><span class="type-outline block">tu pago</span></h1>
             <p class="mt-6 text-bone/75">Estamos esperando la confirmación del medio de pago. No cierres esta página.</p>
-            <div class="mt-6 h-1.5 w-full overflow-hidden bg-steel"><div class="bar h-full w-1/3 bg-lime"></div></div>
+            <div class="mt-6 h-1.5 w-full overflow-hidden rounded-full bg-steel"><div class="bar h-full w-1/3 rounded-full bg-lime"></div></div>
           }
           @default {
-            <span class="grid size-14 place-items-center bg-blood text-bone"><bs-icon name="x" [size]="30" /></span>
+            <span class="grid size-14 place-items-center rounded-full bg-blood text-bone"><bs-icon name="x" [size]="30" /></span>
             <h1 class="mt-6 text-[clamp(3rem,13vw,6rem)]"><span class="type-display block">Pago no</span><span class="type-outline block">realizado</span></h1>
             <p class="mt-6 text-bone/75">{{ failText(o.status) }} No se hizo ningún cargo y el cupo quedó libre.</p>
             <div class="mt-8 flex flex-wrap gap-3">

@@ -36,7 +36,7 @@ import { Roster as RosterData, StaffApi, StudentHit } from './staff-api';
           <div class="flex flex-col items-start gap-3 sm:items-end">
             <bs-plate-meter [taken]="s.taken" [capacity]="s.capacity" />
             @if (s.status === 'scheduled') {
-              <button type="button" class="tape !text-lg" (click)="openAdd()"><bs-icon name="plus" /> Agregar persona</button>
+              <button type="button" class="tape" (click)="openAdd()"><bs-icon name="plus" /> Agregar persona</button>
             }
           </div>
         </header>
@@ -57,18 +57,18 @@ import { Roster as RosterData, StaffApi, StudentHit } from './staff-api';
                 </div>
                 <div class="flex flex-wrap gap-1.5">
                   <button type="button" (click)="setStatus(b, 'attended')" [disabled]="busyId() === b.id"
-                    class="border-2 px-3 py-1.5 text-sm font-semibold" [class]="b.status === 'attended' ? 'border-lime bg-lime text-ink' : 'border-steel hover:border-lime'">Asistió</button>
+                    class="min-h-10 rounded-full border px-4 text-sm font-semibold" [class]="b.status === 'attended' ? 'border-lime bg-lime text-ink' : 'border-steel hover:border-lime'">Asistió</button>
                   <button type="button" (click)="setStatus(b, 'no_show')" [disabled]="busyId() === b.id"
-                    class="border-2 px-3 py-1.5 text-sm font-semibold" [class]="b.status === 'no_show' ? 'border-blood bg-blood text-bone' : 'border-steel hover:border-blood'">No vino</button>
-                  <button type="button" class="border-2 border-steel p-1.5 hover:border-ash" (click)="openEdit(b)" [attr.aria-label]="'Editar reserva de ' + b.name"><bs-icon name="edit" [size]="18" /></button>
-                  <button type="button" class="border-2 border-steel p-1.5 hover:border-ash" (click)="openMove(b)" [attr.aria-label]="'Cambiar de clase a ' + b.name"><bs-icon name="move" [size]="18" /></button>
-                  <button type="button" class="border-2 border-steel p-1.5 hover:border-blood hover:text-blood" (click)="setStatus(b, 'cancelled')" [attr.aria-label]="'Cancelar reserva de ' + b.name"><bs-icon name="x" [size]="18" /></button>
+                    class="min-h-10 rounded-full border px-4 text-sm font-semibold" [class]="b.status === 'no_show' ? 'border-blood bg-blood text-bone' : 'border-steel hover:border-blood'">No vino</button>
+                  <button type="button" class="grid size-10 place-items-center rounded-full border border-steel hover:border-ash" (click)="openEdit(b)" [attr.aria-label]="'Editar reserva de ' + b.name"><bs-icon name="edit" [size]="18" /></button>
+                  <button type="button" class="grid size-10 place-items-center rounded-full border border-steel hover:border-ash" (click)="openMove(b)" [attr.aria-label]="'Cambiar de clase a ' + b.name"><bs-icon name="move" [size]="18" /></button>
+                  <button type="button" class="grid size-10 place-items-center rounded-full border border-steel hover:border-blood hover:text-blood" (click)="setStatus(b, 'cancelled')" [attr.aria-label]="'Cancelar reserva de ' + b.name"><bs-icon name="x" [size]="18" /></button>
                 </div>
               </li>
             }
           </ul>
         } @else {
-          <div class="mt-6 border border-dashed border-steel p-6 text-bone/70">Nadie reservado todavía.</div>
+          <div class="mt-6 rounded-[var(--radius-card)] border border-dashed border-steel p-6 text-bone/70">Nadie reservado todavía.</div>
         }
 
         @if (cancelled().length) {
@@ -90,19 +90,19 @@ import { Roster as RosterData, StaffApi, StudentHit } from './staff-api';
           </details>
         }
       } @else if (error()) {
-        <p class="mt-6 border-l-4 border-blood bg-blood/10 p-4">{{ error() }}</p>
+        <p class="mt-6 rounded-[var(--radius-field)] border-l-4 border-blood bg-blood/10 p-4">{{ error() }}</p>
       } @else {
-        <div class="mt-6 h-64 animate-pulse bg-iron"></div>
+        <div class="mt-6 h-64 animate-pulse rounded-[var(--radius-card)] bg-iron"></div>
       }
     </section>
 
     <!-- Add person -->
     <bs-modal title="Agregar a la clase" [open]="modal() === 'add'" (closed)="modal.set(null)">
-      <div role="tablist" class="mb-5 grid grid-cols-2 border-2 border-steel">
+      <div role="tablist" class="mb-5 grid grid-cols-2 rounded-full border border-steel p-1">
         <button type="button" role="tab" [attr.aria-selected]="addMode() === 'student'" (click)="addMode.set('student')"
-          class="py-2 font-semibold" [class]="addMode() === 'student' ? 'bg-bone text-ink' : 'text-bone/70'">Alumno con cuenta</button>
+          class="min-h-10 rounded-full text-sm font-semibold" [class]="addMode() === 'student' ? 'bg-lime text-ink' : 'text-bone/70'">Alumno con cuenta</button>
         <button type="button" role="tab" [attr.aria-selected]="addMode() === 'guest'" (click)="addMode.set('guest')"
-          class="py-2 font-semibold" [class]="addMode() === 'guest' ? 'bg-bone text-ink' : 'text-bone/70'">Invitado</button>
+          class="min-h-10 rounded-full text-sm font-semibold" [class]="addMode() === 'guest' ? 'bg-lime text-ink' : 'text-bone/70'">Invitado</button>
       </div>
       <form class="grid gap-4" (ngSubmit)="add()" novalidate>
         @if (addMode() === 'student') {

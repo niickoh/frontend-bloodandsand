@@ -15,13 +15,13 @@ import { PAYMENT_LABEL, Status } from '../../shared/ui/status';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="mx-auto max-w-4xl px-4 pt-8 pb-28 md:px-6 md:pt-12">
-      <h1 class="text-[clamp(3rem,13vw,6.5rem)]">
+      <h1 class="page-title">
         <span class="type-display block">Mis</span>
         <span class="type-outline block">reservas</span>
       </h1>
 
       @if (store.membership(); as m) {
-        <div class="mt-8 flex flex-wrap items-end justify-between gap-4 bg-lime p-5 text-ink">
+        <div class="mt-8 flex flex-wrap items-end justify-between gap-4 rounded-[var(--radius-card)] bg-lime p-5 text-ink">
           <div>
             <p class="text-sm font-semibold text-ink/70">Tu plan</p>
             <p class="type-display text-4xl">{{ m.planName }}</p>
@@ -32,9 +32,9 @@ import { PAYMENT_LABEL, Status } from '../../shared/ui/status';
           </p>
         </div>
       } @else {
-        <div class="mt-8 flex flex-wrap items-center justify-between gap-4 border border-steel bg-iron p-5">
+        <div class="card mt-8 flex flex-wrap items-center justify-between gap-4 p-5">
           <p class="max-w-[44ch] text-bone/80">Sin plan activo: cada clase se paga al reservar. Con un plan reservas sin pagar cada vez.</p>
-          <a routerLink="/planes" class="tape !text-lg">Ver planes</a>
+          <a routerLink="/planes" class="tape">Ver planes</a>
         </div>
       }
 
@@ -42,7 +42,7 @@ import { PAYMENT_LABEL, Status } from '../../shared/ui/status';
       @if (store.upcoming().length) {
         <ul class="mt-4 space-y-3">
           @for (b of store.upcoming(); track b.id) {
-            <li class="grid grid-cols-[4.5rem_1fr] border border-steel bg-iron sm:grid-cols-[5.5rem_1fr_auto]">
+            <li class="grid grid-cols-[4.5rem_1fr] overflow-hidden rounded-[var(--radius-card)] border border-steel bg-iron sm:grid-cols-[5.5rem_1fr_auto]">
               <div class="flex flex-col items-center justify-center border-r border-dashed border-steel py-4" [class]="tone(b.slug)">
                 <span class="text-xs font-semibold capitalize">{{ wd(b.date) }}</span>
                 <span class="type-display text-4xl">{{ day(b.date) }}</span>
@@ -84,7 +84,7 @@ import { PAYMENT_LABEL, Status } from '../../shared/ui/status';
           }
         </ul>
       } @else {
-        <div class="mt-4 border border-dashed border-steel p-6">
+        <div class="mt-4 rounded-[var(--radius-card)] border border-dashed border-steel p-6">
           <p class="text-bone/75">No tienes clases reservadas. Elige un horario y asegura tu cupo.</p>
           <a routerLink="/reservar" class="tape mt-4">Reservar clase</a>
         </div>

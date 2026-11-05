@@ -20,7 +20,7 @@ import { Icon } from '../../shared/ui/icon';
         <a routerLink="/planes" class="inline-flex items-center gap-1 text-sm text-bone/60 hover:text-bone"><bs-icon name="chevron-left" [size]="16" /> Planes</a>
         <div class="mt-6 grid gap-10 md:grid-cols-[1fr_1.1fr]">
           <div>
-            <h1 class="text-[clamp(3rem,12vw,5.5rem)]">
+            <h1 class="page-title">
               <span class="type-display block">{{ p.name }}</span>
               <span class="type-outline block">{{ p.periodDays }} días</span>
             </h1>
@@ -32,15 +32,15 @@ import { Icon } from '../../shared/ui/icon';
             </ul>
             <p class="mt-6 text-sm text-bone/70">Lo contratas como {{ auth.user()?.fullName }} ({{ auth.user()?.email }}).</p>
             @if (store.membership(); as m) {
-              <p class="mt-4 border-l-4 border-pink bg-iron p-4 text-sm">
+              <p class="mt-4 rounded-[var(--radius-field)] border-l-4 border-pink bg-iron p-4 text-sm">
                 Ya tienes el plan {{ m.planName }} hasta el {{ longDate(m.endsAt.slice(0, 10)).toLowerCase() }}. Si contratas este, reemplaza al actual desde hoy.
               </p>
             }
           </div>
-          <div class="border border-steel bg-iron p-5 md:p-7">
+          <div class="card p-5 md:p-7">
             <h2 class="mb-5 font-punch text-3xl font-extrabold italic">Pago</h2>
             @if (error()) {
-              <p class="mb-5 border-l-4 border-blood bg-blood/10 p-4 text-sm" role="alert">{{ error() }}</p>
+              <p class="mb-5 rounded-[var(--radius-field)] border-l-4 border-blood bg-blood/10 p-4 text-sm" role="alert">{{ error() }}</p>
             }
             <bs-payment-form [amount]="p.price" [busy]="busy()" (paid)="pay($event)" />
           </div>

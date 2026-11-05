@@ -38,7 +38,7 @@ const luhn = (digits: string) => {
             role="radio"
             [attr.aria-checked]="provider() === p.name"
             (click)="provider.set(p.name)"
-            class="flex items-center gap-2 border-2 px-3 py-3 text-left text-sm font-semibold transition-colors"
+            class="flex min-h-14 items-center gap-2 rounded-[var(--radius-field)] border-2 px-3 text-left text-sm font-semibold transition-colors"
             [class]="provider() === p.name ? 'border-lime bg-lime/10 text-bone' : 'border-steel text-bone/70 hover:border-ash'"
           >
             <bs-icon [name]="p.name === 'fake' ? 'card' : 'share'" />
@@ -72,7 +72,7 @@ const luhn = (digits: string) => {
           @if (touched() && !cvvOk()) { <span class="mt-1 block text-sm text-blood">3 o 4 dígitos.</span> }
         </label>
         <p class="col-span-2 text-xs text-ash">Pago de prueba: 4242 4242 4242 4242 se aprueba y 4000 0000 0000 0002 se rechaza. No se cobra nada.</p>
-        <button type="submit" class="tape col-span-2 !py-3.5 !text-2xl" [disabled]="busy()">
+        <button type="submit" class="tape col-span-2 tape-lg" [disabled]="busy()">
           @if (busy()) { Procesando pago… } @else { Pagar {{ money(amount()) }} }
         </button>
       </form>
@@ -80,7 +80,7 @@ const luhn = (digits: string) => {
       <p class="mt-5 text-sm text-bone/70">
         Te llevaremos a {{ label() }} para pagar de forma segura. Tu cupo queda guardado 15 minutos mientras completas el pago.
       </p>
-      <button type="button" class="tape mt-5 w-full !py-3.5 !text-2xl" [disabled]="busy()" (click)="paid.emit({ provider: provider() })">
+      <button type="button" class="tape mt-5 w-full tape-lg" [disabled]="busy()" (click)="paid.emit({ provider: provider() })">
         @if (busy()) { Conectando… } @else { Pagar {{ money(amount()) }} con {{ label() }} }
       </button>
     } @else {

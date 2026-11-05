@@ -3,28 +3,35 @@
 /* Self-hosted fonts (latin subset only, cached by the service worker) */
 @import '@fontsource/anton/latin-400.css';
 @import '@fontsource/barlow/latin-400.css';
+@import '@fontsource/barlow/latin-500.css';
 @import '@fontsource/barlow/latin-600.css';
+@import '@fontsource/barlow/latin-700.css';
 @import '@fontsource/barlow-condensed/latin-700-italic.css';
 @import '@fontsource/barlow-condensed/latin-800-italic.css';
 
 /*
- * Blood & Sand tokens — taken from the brand pieces:
- * black ground, lime from the wordmark, campaign pink, blood red.
+ * Blood & Sand v2 tokens.
+ * Black ground and lime from the wordmark. Lime = action/selection only; pink = scarcity only.
+ * Radius scale encodes hierarchy: pill = actions & filters, 16px = cards, 8px = fields.
  */
 @theme {
   --color-ink: #000000;
-  --color-iron: #141414;
-  --color-steel: #262626;
-  --color-ash: #8a8a8a;
+  --color-iron: #131313; /* cards */
+  --color-iron-2: #1b1b1b; /* raised / hover */
+  --color-steel: #2a2a2a; /* borders */
+  --color-ash: #9a9a9a; /* secondary text (AA on iron) */
   --color-bone: #f3f3ef;
   --color-lime: #c8fb32;
   --color-lime-dim: #9fcc1f;
-  --color-pink: #e3338a;
-  --color-blood: #ee1c27;
+  --color-pink: #ff4fa3;
+  --color-blood: #ff4545;
 
   --font-display: 'Anton', 'Impact', 'Arial Narrow', sans-serif;
   --font-punch: 'Barlow Condensed', 'Arial Narrow', sans-serif;
   --font-sans: 'Barlow', system-ui, sans-serif;
+
+  --radius-card: 1rem;
+  --radius-field: 0.5rem;
 
   --ease-snap: cubic-bezier(0.2, 0.9, 0.1, 1);
 }
@@ -35,16 +42,16 @@
     color: var(--color-bone);
     -webkit-tap-highlight-color: transparent;
     scroll-behavior: smooth;
-    /* Keep focused fields clear of the sticky header and the phone tab bar */
     scroll-padding-top: 5rem;
     scroll-padding-bottom: 9rem;
   }
   body {
-    @apply min-h-dvh bg-ink font-sans text-[1.0625rem] leading-relaxed text-bone antialiased;
+    @apply min-h-dvh bg-ink font-sans text-base leading-relaxed text-bone antialiased;
+    font-feature-settings: 'tnum' 1; /* aligned prices, times and counts */
   }
   :focus-visible {
     outline: 3px solid var(--color-lime);
-    outline-offset: 3px;
+    outline-offset: 2px;
   }
   ::selection {
     background: var(--color-lime);
@@ -64,17 +71,20 @@
 }
 
 @layer components {
-  /* Giant outlined poster type, as in the campaign pieces */
+  /* Poster outline type: reserved for the home hero. Elsewhere it reads as solid display. */
   .type-outline {
     font-family: var(--font-display);
     text-transform: uppercase;
+    line-height: 0.9;
+    color: var(--color-bone);
+  }
+  .hero .type-outline {
     line-height: 0.86;
-    letter-spacing: -0.005em;
     color: transparent;
     -webkit-text-stroke: 1.5px var(--color-bone);
   }
   @media (min-width: 768px) {
-    .type-outline {
+    .hero .type-outline {
       -webkit-text-stroke-width: 2px;
     }
   }
@@ -82,33 +92,69 @@
   .type-display {
     font-family: var(--font-display);
     text-transform: uppercase;
-    line-height: 0.9;
+    line-height: 0.92;
+    letter-spacing: 0.005em;
   }
 
-  /* The "tape" slab: lime block with black condensed italic, from the posters */
+  /* One size for every page title, so screens feel like one app */
+  .page-title {
+    font-size: clamp(2.25rem, 8vw, 3.75rem);
+  }
+  .page-title > span {
+    display: inline !important;
+  }
+  .page-title > span + span::before {
+    content: ' ';
+  }
+
+  /* Primary action: pill, like the "Primera clase gratis" badge on the posters */
   .tape {
-    @apply inline-flex items-center justify-center gap-2 bg-lime px-5 py-2.5 font-punch text-xl font-extrabold text-ink italic uppercase;
-    clip-path: polygon(2% 0, 100% 0, 98% 100%, 0 100%);
-    transition: transform 160ms var(--ease-snap), background-color 160ms;
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-lime px-6 text-base font-semibold text-ink normal-case not-italic transition-[background-color,transform] duration-150 select-none;
   }
   .tape:hover {
     background: #d8ff5c;
   }
   .tape:active {
-    transform: translateY(1px) scale(0.99);
+    transform: scale(0.98);
   }
   .tape:disabled {
     @apply cursor-not-allowed bg-steel text-ash;
   }
+  .tape-lg {
+    @apply min-h-14 px-8 text-lg;
+  }
+  .tape-sm {
+    @apply min-h-10 px-4 text-sm;
+  }
+  /* Secondary action */
   .tape-ghost {
-    @apply inline-flex items-center justify-center gap-2 border-2 border-bone/70 px-5 py-2 font-punch text-xl font-bold text-bone italic uppercase transition-colors hover:border-lime hover:text-lime;
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-bone/35 px-6 text-base font-semibold text-bone normal-case not-italic transition-colors select-none hover:border-bone hover:bg-bone/5;
+  }
+  .tape-ghost:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  /* Filter chips */
+  .chip {
+    @apply inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold whitespace-nowrap transition-colors;
+  }
+
+  .card {
+    @apply rounded-[var(--radius-card)] border border-steel bg-iron;
   }
 
   .field {
-    @apply block w-full rounded-none border-0 border-b-2 border-steel bg-iron px-3 py-3 text-bone placeholder:text-ash/70 focus:border-lime focus:outline-none;
+    @apply block min-h-12 w-full rounded-[var(--radius-field)] border border-steel bg-iron px-3.5 py-2.5 text-base text-bone transition-colors placeholder:text-ash/70 hover:border-ash/60 focus:border-lime focus:ring-2 focus:ring-lime/30 focus:outline-none;
+  }
+  .field[aria-invalid='true'] {
+    @apply border-blood;
+  }
+  select.field {
+    @apply appearance-none bg-[length:1.1rem] bg-[right_0.8rem_center] bg-no-repeat pr-10;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a9a9a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   }
   .field-label {
-    @apply mb-1.5 block text-sm font-semibold text-bone/80;
+    @apply mb-1.5 block text-sm font-semibold text-bone/85;
   }
 }
 

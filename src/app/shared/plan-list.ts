@@ -1,11 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { BookingStore } from '../core/services/booking.store';
 import { CatalogStore } from '../core/services/catalog.store';
+import { Plan } from '../core/models';
 import { money } from '../core/utils/date';
 import { Icon } from './ui/icon';
 
-/** Plans as a price ladder; the featured plan is the poster, the rest stay quiet. */
+/**
+ * Pricing table. Store pattern: unit price per class so plans compare at a glance,
+ * the featured plan is visually raised, guarantees sit right under the prices.
+ */
 @Component({
   selector: 'bs-plan-list',
   imports: [RouterLink, Icon],
@@ -13,47 +17,79 @@ import { Icon } from './ui/icon';
   template: `
     @if (!catalog.loaded()) {
       <div class="grid gap-4 lg:grid-cols-3" aria-busy="true">
-        @for (i of [1, 2, 3]; track i) { <div class="h-96 animate-pulse bg-iron"></div> }
+        @for (i of [1, 2, 3]; track i) { <div class="h-[26rem] animate-pulse rounded-[var(--radius-card)] bg-iron"></div> }
       </div>
     }
-    <ul class="grid gap-4 lg:grid-cols-3 lg:items-stretch">
-      @for (p of catalog.plans(); track p.id) {
-        <li class="relative flex flex-col p-6 md:p-7" [class]="p.featured ? 'bg-lime text-ink lg:-my-4 lg:py-10' : 'border border-steel bg-iron'">
-          @if (p.featured) {
-            <span class="absolute -top-3 left-6 bg-ink px-3 py-1 font-punch text-sm font-bold text-lime italic">El más elegido</span>
-          }
-          <h3 class="type-display text-4xl">{{ p.name }}</h3>
-          <p class="mt-3 flex items-baseline gap-2">
-            <span class="font-punch text-5xl font-extrabold italic">{{ money(p.price) }}</span>
-            <span [class]="p.featured ? 'text-ink/70' : 'text-ash'">{{ p.sellable ? (p.periodDays === 30 ? 'al mes' : p.periodDays + ' días') : 'por clase' }}</span>
+    <ul class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:items-stretch">
+      @for (p of plans(); track p.id) {
+        <li
+          class="relative flex flex-col rounded-[var(--radius-card)] p-6"
+          [class]="p.featured ? 'bg-lime text-ink md:col-span-2 lg:col-span-1 lg:-my-3 lg:py-9' : 'border border-steel bg-iron'"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <h3 class="text-xl font-bold">{{ p.name }}</h3>
+            @if (p.featured) {
+              <span class="rounded-full bg-ink px-3 py-1 text-xs font-bold text-lime">Más elegido</span>
+            } @else if (store.membership()?.planId === p.id) {
+              <span class="rounded-full border border-lime px-3 py-1 text-xs font-bold text-lime">Tu plan</span>
+            }
+          </div>
+
+          <p class="mt-4 flex items-baseline gap-1.5">
+            <span class="type-display text-5xl">{{ money(p.price) }}</span>
+            <span class="text-sm" [class]="p.featured ? 'text-ink/70' : 'text-ash'">{{ period(p) }}</span>
           </p>
-          <ul class="mt-5 flex-1 space-y-2">
+          <p class="mt-1 text-sm font-semibold" [class]="p.featured ? 'text-ink/80' : 'text-lime'">{{ unit(p) }}</p>
+
+          <ul class="mt-6 flex-1 space-y-2.5 text-[0.95rem]">
             @for (perk of p.perks; track perk) {
-              <li class="flex gap-2">
-                <bs-icon name="check" [size]="18" [class]="p.featured ? 'mt-1 text-ink' : 'mt-1 text-lime'" />
+              <li class="flex gap-2.5">
+                <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full" [class]="p.featured ? 'bg-ink text-lime' : 'bg-iron-2 text-lime'">
+                  <bs-icon name="check" [size]="13" />
+                </span>
                 {{ perk }}
               </li>
             }
           </ul>
+
           @if (store.membership()?.planId === p.id) {
-            <p class="mt-6 border-2 px-4 py-2 text-center font-semibold" [class]="p.featured ? 'border-ink' : 'border-lime text-lime'">Es tu plan actual</p>
+            <a routerLink="/reservar" class="mt-7 w-full" [class]="p.featured ? 'tape bg-ink! text-lime! hover:bg-iron!' : 'tape-ghost'">Reservar con mi plan</a>
           } @else if (!p.sellable) {
-            <a routerLink="/reservar" class="tape-ghost mt-6">Reservar una clase</a>
+            <a routerLink="/reservar" class="tape-ghost mt-7 w-full">Reservar una clase</a>
           } @else {
-            <a
-              [routerLink]="['/planes', p.slug, 'pago']"
-              class="mt-6"
-              [class]="p.featured ? 'inline-flex items-center justify-center bg-ink px-5 py-3 font-punch text-xl font-extrabold text-lime italic uppercase hover:bg-iron' : 'tape'"
-              >Contratar {{ p.name }}</a
-            >
+            <a [routerLink]="['/planes', p.slug, 'pago']" class="mt-7 w-full" [class]="p.featured ? 'tape bg-ink! text-lime! hover:bg-iron!' : 'tape'">Elegir {{ p.name }}</a>
           }
         </li>
       }
     </ul>
+
+    @if (catalog.loaded()) {
+      <ul class="mt-8 grid gap-3 text-sm text-bone/75 sm:grid-cols-3">
+        <li class="flex items-center gap-2.5"><bs-icon name="check" [size]="18" class="text-lime" /> Sin matrícula ni contrato de permanencia</li>
+        <li class="flex items-center gap-2.5"><bs-icon name="check" [size]="18" class="text-lime" /> Primera clase y evaluación gratis</li>
+        <li class="flex items-center gap-2.5"><bs-icon name="check" [size]="18" class="text-lime" /> Paga con Webpay o Mercado Pago</li>
+      </ul>
+    }
   `,
 })
 export class PlanList {
   protected readonly store = inject(BookingStore);
   protected readonly catalog = inject(CatalogStore);
   protected readonly money = money;
+
+  /** Drop-in first, then by price, so the ladder reads left to right. */
+  protected readonly plans = computed(() =>
+    [...this.catalog.plans()].sort((a, b) => Number(a.sellable) - Number(b.sellable) || a.sort - b.sort),
+  );
+
+  protected period(p: Plan) {
+    if (!p.sellable) return 'por clase';
+    return p.periodDays === 30 ? 'al mes' : `por ${p.periodDays} días`;
+  }
+
+  protected unit(p: Plan) {
+    if (!p.sellable) return 'Pagas solo cuando vienes';
+    if (p.credits === null) return '3 veces por semana: ' + money(Math.round(p.price / 12)) + ' por clase';
+    return money(Math.round(p.price / p.credits)) + ' por clase';
+  }
 }

@@ -1,18 +1,13 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-/** Poster-style heading: solid line + outlined line, both from the campaign pieces. */
+/** Section heading: one solid display line plus an optional lead. */
 @Component({
   selector: 'bs-section-title',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h2 class="text-[clamp(2.75rem,11vw,6.5rem)]">
-      <span class="type-display block text-bone">{{ solid() }}</span>
-      @if (outline()) {
-        <span class="type-outline block">{{ outline() }}</span>
-      }
-    </h2>
+    <h2 class="type-display text-[clamp(2rem,6.5vw,3.5rem)] text-bone">{{ solid() }}@if (outline()) { {{ ' ' + outline() }} }</h2>
     @if (lead()) {
-      <p class="mt-4 max-w-[52ch] text-bone/75">{{ lead() }}</p>
+      <p class="mt-3 max-w-[56ch] text-bone/70 md:text-lg">{{ lead() }}</p>
     }
   `,
 })

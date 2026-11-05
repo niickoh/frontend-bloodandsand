@@ -16,30 +16,30 @@ import { StaffApi } from '../staff/staff-api';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="mx-auto max-w-5xl px-4 pt-8 pb-28 md:px-6 md:pt-12">
-      <h1 class="text-[clamp(3rem,13vw,6rem)]">
+      <h1 class="page-title">
         <span class="type-display block">Mis</span>
         <span class="type-outline block">clases</span>
       </h1>
       <p class="mt-3 text-bone/70">Hola, {{ auth.firstName() }}. Toca una clase para ver quién viene, marcar asistencia o mover reservas.</p>
 
-      <div class="mt-8 grid grid-cols-3 gap-px bg-steel text-center">
+      <div class="mt-8 grid grid-cols-3 gap-px overflow-hidden rounded-[var(--radius-card)] bg-steel text-center">
         <div class="bg-iron p-4"><p class="type-display text-4xl">{{ todayCount() }}</p><p class="text-xs text-ash">clases hoy</p></div>
         <div class="bg-iron p-4"><p class="type-display text-4xl">{{ weekCount() }}</p><p class="text-xs text-ash">esta semana</p></div>
         <div class="bg-iron p-4"><p class="type-display text-4xl">{{ weekPeople() }}</p><p class="text-xs text-ash">reservas esta semana</p></div>
       </div>
 
       <div class="mt-10 flex items-center justify-between gap-3">
-        <button type="button" class="border-2 border-steel p-2 hover:border-ash" (click)="shift(-7)" aria-label="Semana anterior"><bs-icon name="chevron-left" /></button>
+        <button type="button" class="grid size-11 place-items-center rounded-full border border-steel hover:border-ash" (click)="shift(-7)" aria-label="Semana anterior"><bs-icon name="chevron-left" /></button>
         <p class="font-punch text-xl font-extrabold italic">{{ rangeLabel() }}</p>
-        <button type="button" class="border-2 border-steel p-2 hover:border-ash" (click)="shift(7)" aria-label="Semana siguiente"><bs-icon name="chevron-right" /></button>
+        <button type="button" class="grid size-11 place-items-center rounded-full border border-steel hover:border-ash" (click)="shift(7)" aria-label="Semana siguiente"><bs-icon name="chevron-right" /></button>
       </div>
 
       @if (error()) {
-        <p class="mt-6 border-l-4 border-blood bg-blood/10 p-4">{{ error() }}</p>
+        <p class="mt-6 rounded-[var(--radius-field)] border-l-4 border-blood bg-blood/10 p-4">{{ error() }}</p>
       } @else if (loading()) {
-        <div class="mt-6 h-64 animate-pulse bg-iron"></div>
+        <div class="mt-6 h-64 animate-pulse rounded-[var(--radius-card)] bg-iron"></div>
       } @else if (!groups().length) {
-        <div class="mt-6 border border-dashed border-steel p-6 text-bone/70">No tienes clases asignadas esta semana. El admin las asigna desde el horario.</div>
+        <div class="mt-6 rounded-[var(--radius-card)] border border-dashed border-steel p-6 text-bone/70">No tienes clases asignadas esta semana. El admin las asigna desde el horario.</div>
       } @else {
         @for (g of groups(); track g.date) {
           <h2 class="mt-8 mb-2 font-semibold" [class.text-lime]="g.date === today">{{ g.date === today ? 'Hoy · ' : '' }}{{ longDate(g.date) }}</h2>
