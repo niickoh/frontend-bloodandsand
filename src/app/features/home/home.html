@@ -17,7 +17,7 @@
 
   <div class="mx-auto flex min-h-[calc(100svh-6.5rem)] max-w-7xl flex-col justify-end px-4 pt-20 pb-10 md:px-6 md:pb-16 lg:min-h-[min(780px,calc(100svh-6.5rem))] lg:justify-center">
     <p class="mb-5 inline-flex items-center gap-2 self-start rounded-full bg-bone/10 px-3 py-1.5 text-sm font-semibold backdrop-blur-sm">
-      <span class="size-2 rounded-full bg-lime"></span> Box, fuerza y funcional en Santiago
+      <span class="relative flex size-2"><span class="absolute inline-flex size-full animate-ping rounded-full bg-blood opacity-60 motion-reduce:hidden"></span><span class="relative inline-flex size-2 rounded-full bg-blood"></span></span> Box, fuerza y funcional en Santiago
     </p>
     <h1 id="hero-title" class="text-[clamp(3.75rem,18vw,9.5rem)]">
       <span class="hero-line type-outline block">Entrena</span>
@@ -27,13 +27,20 @@
       Clases en grupos chicos con un coach que corrige tu técnica. Tu primera clase es gratis y la reservas en 30 segundos.
     </p>
     <div class="mt-7 flex flex-col gap-3 sm:flex-row">
-      <a routerLink="/reservar" [queryParams]="{ d: 'evaluacion' }" class="tape tape-lg">Reservar clase gratis</a>
-      <a routerLink="/planes" class="tape-ghost tape-lg">Ver planes y precios</a>
+      @if (cfg.reservas.activo) {
+        <a routerLink="/reservar" [queryParams]="{ d: 'evaluacion' }" class="tape tape-lg">Reservar clase gratis</a>
+      }
+      @if (cfg.planes.activo) {
+        <a routerLink="/planes" [class]="cfg.reservas.activo ? 'tape-ghost tape-lg' : 'tape tape-lg'">Ver planes y precios</a>
+      } @else if (cfg.horario) {
+        <a routerLink="/horario" [class]="cfg.reservas.activo ? 'tape-ghost tape-lg' : 'tape tape-lg'">Ver horario</a>
+      }
     </div>
   </div>
 </section>
 
 <!-- ============ Guarantees: trust row right under the fold ============ -->
+@if (on.garantias) {
 <section class="border-y border-steel bg-iron" aria-label="Lo que incluye">
   <ul class="scrollbar-none mx-auto flex max-w-7xl snap-x gap-6 overflow-x-auto px-4 py-4 text-sm md:justify-between md:px-6">
     @for (g of guarantees; track g.text) {
@@ -44,14 +51,18 @@
     }
   </ul>
 </section>
+}
 
 <!-- ============ Next classes: book in one tap ============ -->
+@if (on.proximasClases) {
 <section class="py-14 md:py-20" aria-labelledby="next-title">
   <div class="mx-auto flex max-w-7xl items-end justify-between gap-4 px-4 md:px-6">
     <div id="next-title">
       <bs-section-title solid="Próximas clases" lead="Cupos en tiempo real. Toca una para reservarla." />
     </div>
-    <a routerLink="/horario" class="hidden shrink-0 items-center gap-1 text-sm font-semibold text-lime hover:underline sm:inline-flex">Horario completo <bs-icon name="chevron-right" [size]="16" /></a>
+    @if (cfg.horario) {
+      <a routerLink="/horario" class="hidden shrink-0 items-center gap-1 text-sm font-semibold text-lime hover:underline sm:inline-flex">Horario completo <bs-icon name="chevron-right" [size]="16" /></a>
+    }
   </div>
 
   <ul class="scrollbar-none mt-7 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-auto md:max-w-7xl md:px-6">
@@ -60,14 +71,14 @@
     }
     @for (s of upcoming(); track s.id) {
       <li class="w-60 shrink-0 snap-start">
-        <a routerLink="/reservar" [queryParams]="{ d: s.slug, fecha: s.date, s: s.id }"
+        <a [routerLink]="cfg.reservas.activo ? '/reservar' : '/horario'" [queryParams]="{ d: s.slug, fecha: s.date, s: s.id }"
           class="card group flex h-full flex-col p-4 transition-colors hover:border-lime/60 hover:bg-iron-2">
           <p class="flex items-center justify-between text-sm">
             <span class="font-semibold capitalize" [class.text-lime]="isToday(s.date)">{{ dayLabel(s.date) }}</span>
             <span class="text-ash">{{ s.price ? money(s.price) : 'Gratis' }}</span>
           </p>
           <p class="type-display mt-2 text-4xl">{{ s.start }}</p>
-          <p class="mt-1 text-lg font-bold">{{ s.discipline }}</p>
+          <p class="mt-1 flex items-center gap-2 text-lg font-bold"><span class="size-2.5 rounded-full" [class]="accent(s.slug).dot"></span>{{ s.discipline }}</p>
           <p class="text-sm text-ash">{{ s.coachName ?? 'Coach por confirmar' }}</p>
           <div class="mt-auto flex items-center justify-between gap-2 pt-4">
             <bs-plate-meter [taken]="s.taken" [capacity]="s.capacity" />
@@ -81,12 +92,16 @@
       }
     }
   </ul>
-  <div class="mt-4 px-4 sm:hidden">
-    <a routerLink="/horario" class="tape-ghost w-full">Ver horario completo</a>
-  </div>
+  @if (cfg.horario) {
+    <div class="mt-4 px-4 sm:hidden">
+      <a routerLink="/horario" class="tape-ghost w-full">Ver horario completo</a>
+    </div>
+  }
 </section>
+}
 
 <!-- ============ Disciplines as product cards ============ -->
+@if (on.disciplinas) {
 <section class="pb-14 md:pb-24" aria-labelledby="disc-title">
   <div class="mx-auto max-w-7xl px-4 md:px-6">
     <div id="disc-title">
@@ -95,7 +110,7 @@
     <ul class="mt-8 grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
       @for (d of disciplines(); track d.id) {
         <li>
-          <a routerLink="/reservar" [queryParams]="{ d: d.slug }" class="card group flex h-full flex-col overflow-hidden transition-colors hover:border-lime/60">
+          <a [routerLink]="cfg.reservas.activo ? '/reservar' : '/horario'" [queryParams]="{ d: d.slug }" class="card group flex h-full flex-col overflow-hidden transition-colors hover:border-lime/60">
             <div class="relative aspect-[4/5] overflow-hidden bg-iron-2 sm:aspect-[4/3] lg:aspect-[4/5]">
               <img [src]="'img/' + imageFor(d.image) + '-480.webp'" alt="" loading="lazy" decoding="async" width="480" height="600"
                 class="h-full w-full object-cover opacity-80 transition-[opacity,transform] duration-500 group-hover:scale-[1.04] group-hover:opacity-100" />
@@ -103,10 +118,10 @@
               @if (!d.price) {
                 <span class="absolute top-3 left-3 rounded-full bg-lime px-2.5 py-1 text-xs font-bold text-ink">Gratis</span>
               }
-              <span class="absolute right-3 bottom-3 left-3 font-punch text-base leading-tight font-extrabold text-lime italic uppercase">{{ d.tagline }}</span>
+              <span class="absolute right-3 bottom-3 left-3 font-punch text-base leading-tight font-extrabold italic uppercase" [class]="accent(d.slug).text">{{ d.tagline }}</span>
             </div>
             <div class="flex flex-1 flex-col p-3.5 md:p-4">
-              <h3 class="text-lg font-bold md:text-xl">{{ d.name }}</h3>
+              <h3 class="flex items-center gap-2 text-lg font-bold md:text-xl"><span class="size-2.5 rounded-full" [class]="accent(d.slug).dot"></span>{{ d.name }}</h3>
               <p class="mt-0.5 line-clamp-2 text-sm text-bone/70">{{ d.short }}</p>
               <p class="mt-auto flex items-baseline justify-between gap-2 pt-3 text-sm">
                 <span class="font-bold text-bone">{{ d.price ? money(d.price) : 'Gratis' }}</span>
@@ -119,19 +134,21 @@
     </ul>
   </div>
 </section>
+}
 
 <!-- ============ How it works: a real sequence, so numbered ============ -->
+@if (on.comoFunciona && cfg.reservas.activo) {
 @defer (on viewport) {
-  <section class="border-y border-steel bg-iron py-14 md:py-20" aria-labelledby="how-title">
+  <section class="bg-sand py-14 text-char md:py-20" aria-labelledby="how-title">
     <div class="mx-auto max-w-7xl px-4 md:px-6">
-      <div id="how-title"><bs-section-title solid="Así de simple" /></div>
+      <h2 id="how-title" class="type-display text-[clamp(2rem,6.5vw,3.5rem)]">Así de simple</h2>
       <ol class="mt-8 grid gap-6 md:grid-cols-3">
         @for (step of steps; track step.title; let i = $index) {
           <li class="flex gap-4 md:flex-col">
-            <span class="type-display grid size-12 shrink-0 place-items-center rounded-full bg-lime text-2xl text-ink">{{ i + 1 }}</span>
+            <span class="type-display grid size-12 shrink-0 place-items-center rounded-full bg-blood-fill text-2xl text-sand">{{ i + 1 }}</span>
             <div>
               <p class="text-lg font-bold">{{ step.title }}</p>
-              <p class="mt-1 text-bone/70">{{ step.body }}</p>
+              <p class="mt-1 text-char/75">{{ step.body }}</p>
             </div>
           </li>
         }
@@ -140,10 +157,13 @@
     </div>
   </section>
 } @placeholder {
-  <div class="h-[480px] border-y border-steel bg-iron"></div>
+  <div class="h-[480px] bg-sand"></div>
+}
+
 }
 
 <!-- ============ Plans ============ -->
+@if (on.planes && cfg.planes.activo) {
 @defer (on viewport) {
   <section class="py-14 md:py-24" aria-labelledby="plans-title">
     <div class="mx-auto max-w-7xl px-4 md:px-6">
@@ -157,7 +177,10 @@
   <div class="h-[900px]"></div>
 }
 
+}
+
 <!-- ============ Location + hours ============ -->
+@if (on.ubicacion) {
 @defer (on viewport) {
   <section class="pb-14 md:pb-24" aria-labelledby="visit-title">
     <div class="mx-auto grid max-w-7xl gap-4 px-4 md:grid-cols-2 md:px-6">
@@ -186,7 +209,10 @@
   <div class="h-[420px]"></div>
 }
 
+}
+
 <!-- ============ FAQ ============ -->
+@if (on.preguntas) {
 @defer (on viewport) {
   <section class="pb-14 md:pb-24" aria-labelledby="faq-title">
     <div class="mx-auto grid max-w-7xl gap-8 px-4 md:px-6 lg:grid-cols-[1fr_1.6fr]">
@@ -208,7 +234,10 @@
   <div class="h-[460px]"></div>
 }
 
+}
+
 <!-- ============ Campaign wall ============ -->
+@if (on.galeria) {
 @defer (on viewport) {
   <section class="pb-14 md:pb-24" aria-labelledby="wall-title">
     <div class="mx-auto flex max-w-7xl items-end justify-between gap-6 px-4 md:px-6">
@@ -227,15 +256,17 @@
   <div class="h-[460px]"></div>
 }
 
+}
+
 <!-- ============ Closing CTA ============ -->
-@if (!auth.isStaff()) {
+@if (on.bannerFinal && cfg.reservas.activo && !auth.isStaff()) {
   <section class="px-4 pb-16 md:px-6 md:pb-24">
-    <div class="mx-auto flex max-w-7xl flex-col items-start gap-6 rounded-[1.5rem] bg-lime p-7 text-ink md:flex-row md:items-center md:justify-between md:p-12">
+    <div class="cta-band relative mx-auto flex max-w-7xl flex-col items-start gap-6 overflow-hidden rounded-[1.5rem] bg-blood-fill p-7 text-sand md:flex-row md:items-center md:justify-between md:p-12">
       <div>
         <p class="type-display text-[clamp(2.25rem,7vw,4rem)]">Tu primera clase es gratis</p>
-        <p class="mt-2 max-w-[48ch] text-ink/75 md:text-lg">Elige una evaluación o la clase que más te llame. Sin tarjeta y sin crear cuenta.</p>
+        <p class="mt-2 max-w-[48ch] text-sand/85 md:text-lg">Elige una evaluación o la clase que más te llame. Sin tarjeta y sin crear cuenta.</p>
       </div>
-      <a routerLink="/reservar" class="tape tape-lg shrink-0 bg-ink! text-lime! hover:bg-iron!">Reservar ahora</a>
+      <a routerLink="/reservar" class="tape tape-lg relative shrink-0">Reservar ahora</a>
     </div>
   </section>
 }

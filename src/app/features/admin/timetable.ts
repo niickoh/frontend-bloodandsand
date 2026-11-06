@@ -42,7 +42,7 @@ const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
                   <span class="type-display text-xl">{{ t.startTime }}</span>
                   <span class="min-w-0">
                     <span class="block truncate font-semibold">{{ t.discipline }}</span>
-                    <span class="block truncate text-xs" [class]="t.coachName ? 'text-ash' : 'text-pink'">{{ t.coachName ?? 'Sin coach' }}</span>
+                    <span class="block truncate text-xs" [class]="t.coachName ? 'text-ash' : 'text-blood'">{{ t.coachName ?? 'Sin coach' }}</span>
                   </span>
                   <span class="text-xs text-ash">{{ t.capacity }} cupos{{ t.active ? '' : ' · pausada' }}</span>
                 </button>

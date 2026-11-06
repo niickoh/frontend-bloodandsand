@@ -1,0 +1,61 @@
+{
+  "version": "1",
+  "api": {
+    "url": "https://api-bloodandsand.sportspherecenter.com/api/"
+  },
+  "mantenimiento": {
+    "activo": false,
+    "mensaje": "Estamos haciendo mejoras en la página. Vuelve en unos minutos."
+  },
+  "tema": {
+    "modoClaro": true,
+    "porDefecto": "sistema"
+  },
+  "barraOferta": {
+    "activo": true,
+    "texto": "Tu primera clase es gratis. Reserva en 30 segundos, sin crear cuenta."
+  },
+  "cuentas": {
+    "registro": false,
+    "reservaSinCuenta": true
+  },
+  "reservas": {
+    "activo": true,
+    "cancelar": true,
+    "agregarCalendario": false
+  },
+  "horario": true,
+  "planes": {
+    "activo": true,
+    "comprar": true
+  },
+  "pagos": {
+    "simulado": true,
+    "webpay": true,
+    "mercadopago": true
+  },
+  "notificaciones": true,
+  "instalarApp": true,
+  "inicio": {
+    "garantias": true,
+    "proximasClases": true,
+    "disciplinas": true,
+    "comoFunciona": true,
+    "planes": true,
+    "ubicacion": true,
+    "preguntas": true,
+    "galeria": true,
+    "bannerFinal": true
+  },
+  "coach": true,
+  "admin": {
+    "resumen": true,
+    "clases": true,
+    "reservas": true,
+    "horario": true,
+    "usuarios": true,
+    "pagos": true,
+    "catalogo": true,
+    "avisos": true
+  }
+}

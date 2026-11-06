@@ -3,6 +3,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../core/auth/auth.service';
 import { BookingStore } from '../core/services/booking.store';
 import { Icon, IconName } from '../shared/ui/icon';
+import { ConfigService } from '../core/config/app-config';
+import { ADMIN_SECTIONS } from '../core/config/guards';
 
 interface Tab {
   to: string;
@@ -38,7 +40,7 @@ interface Tab {
             <span class="relative grid h-8 w-14 place-items-center rounded-full transition-colors" [class.bg-iron-2]="rla.isActive">
               <bs-icon [name]="t.icon" [size]="22" />
               @if (t.badge && count() > 0) {
-                <span class="absolute -top-1 right-1.5 grid min-w-[1.1rem] place-items-center rounded-full bg-pink px-1 text-[0.65rem] leading-[1.1rem] text-ink">{{ count() }}</span>
+                <span class="absolute -top-1 right-1.5 grid min-w-[1.1rem] place-items-center rounded-full bg-blood px-1 text-[0.65rem] leading-[1.1rem] text-ink">{{ count() }}</span>
               }
             </span>
           }
@@ -51,33 +53,37 @@ interface Tab {
 export class BottomNav {
   private readonly store = inject(BookingStore);
   private readonly auth = inject(AuthService);
+  private readonly cfg = inject(ConfigService).value;
   protected readonly count = computed(() => this.store.upcoming().length);
 
-  protected readonly tabs = computed<Tab[]>(() => {
+  protected readonly tabs = computed<Tab[]>(() => this.all().filter((t): t is Tab => !!t));
+
+  private all(): (Tab | false)[] {
+    const c = this.cfg;
+    const loggedIn = this.auth.loggedIn();
     switch (this.auth.role()) {
       case 'admin':
         return [
-          { to: '/admin', label: 'Panel', icon: 'chart' },
-          { to: '/admin/clases', label: 'Clases', icon: 'calendar' },
-          { to: '/admin/reservas', label: 'Reservas', icon: 'ticket' },
-          { to: '/admin/usuarios', label: 'Usuarios', icon: 'users' },
+          ...ADMIN_SECTIONS.filter((s) => ['resumen', 'clases', 'reservas', 'usuarios'].includes(s.key) && c.admin[s.key]).map(
+            (s): Tab => ({ to: s.to, label: s.key === 'resumen' ? 'Panel' : s.label, icon: s.icon }),
+          ),
           { to: '/cuenta', label: 'Cuenta', icon: 'user' },
         ];
       case 'coach':
         return [
-          { to: '/coach', label: 'Mis clases', icon: 'calendar' },
-          { to: '/horario', label: 'Horario', icon: 'list' },
-          { to: '/avisos', label: 'Avisos', icon: 'bell' },
+          c.coach && { to: '/coach', label: 'Mis clases', icon: 'calendar' },
+          c.horario && { to: '/horario', label: 'Horario', icon: 'list' },
+          c.notificaciones && { to: '/avisos', label: 'Avisos', icon: 'bell' },
           { to: '/cuenta', label: 'Cuenta', icon: 'user' },
         ];
       default:
         return [
           { to: '/', label: 'Inicio', icon: 'home' },
-          { to: '/planes', label: 'Planes', icon: 'tag' },
-          { to: '/reservar', label: 'Reservar', icon: 'plus', primary: true },
+          c.planes.activo ? { to: '/planes', label: 'Planes', icon: 'tag' } : c.horario && { to: '/horario', label: 'Horario', icon: 'list' },
+          c.reservas.activo && { to: '/reservar', label: 'Reservar', icon: 'plus', primary: true },
           { to: '/mis-reservas', label: 'Reservas', icon: 'ticket', badge: true },
-          { to: this.auth.loggedIn() ? '/cuenta' : '/ingresar', label: this.auth.loggedIn() ? 'Cuenta' : 'Ingresar', icon: 'user' },
+          { to: loggedIn ? '/cuenta' : '/ingresar', label: loggedIn ? 'Cuenta' : 'Ingresar', icon: 'user' },
         ];
     }
-  });
+  }
 }

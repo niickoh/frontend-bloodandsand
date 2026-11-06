@@ -7,8 +7,8 @@
   "orientation": "portrait",
   "scope": "./",
   "start_url": "./?source=pwa",
-  "theme_color": "#000000",
-  "background_color": "#000000",
+  "theme_color": "#0e0d0c",
+  "background_color": "#0e0d0c",
   "categories": ["fitness", "health", "sports"],
   "icons": [
     { "src": "icons/icon-72x72.png", "sizes": "72x72", "type": "image/png", "purpose": "any" },

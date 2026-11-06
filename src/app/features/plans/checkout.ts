@@ -32,7 +32,7 @@ import { Icon } from '../../shared/ui/icon';
             </ul>
             <p class="mt-6 text-sm text-bone/70">Lo contratas como {{ auth.user()?.fullName }} ({{ auth.user()?.email }}).</p>
             @if (store.membership(); as m) {
-              <p class="mt-4 rounded-[var(--radius-field)] border-l-4 border-pink bg-iron p-4 text-sm">
+              <p class="mt-4 rounded-[var(--radius-field)] border-l-4 border-blood bg-iron p-4 text-sm">
                 Ya tienes el plan {{ m.planName }} hasta el {{ longDate(m.endsAt.slice(0, 10)).toLowerCase() }}. Si contratas este, reemplaza al actual desde hoy.
               </p>
             }

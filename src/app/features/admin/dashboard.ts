@@ -43,7 +43,7 @@ const PAD_B = 18;
         </div>
       </dl>
       @if (d.pendingOrders) {
-        <a routerLink="/admin/pagos" [queryParams]="{ status: 'pending' }" class="mt-3 inline-block text-sm text-pink underline underline-offset-4">
+        <a routerLink="/admin/pagos" [queryParams]="{ status: 'pending' }" class="mt-3 inline-block text-sm text-blood underline underline-offset-4">
           {{ d.pendingOrders }} {{ d.pendingOrders === 1 ? 'pago pendiente' : 'pagos pendientes' }}
         </a>
       }

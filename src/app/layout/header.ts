@@ -2,6 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../core/auth/auth.service';
 import { BookingStore } from '../core/services/booking.store';
+import { ThemeService } from '../core/services/theme.service';
+import { ConfigService } from '../core/config/app-config';
+import { ADMIN_SECTIONS } from '../core/config/guards';
 import { Icon } from '../shared/ui/icon';
 
 /** Standard store header: logo, primary nav, account, and the main action always in reach. */
@@ -12,14 +15,15 @@ import { Icon } from '../shared/ui/icon';
   host: { class: 'sticky top-0 z-40 block border-b border-steel/70 bg-ink/85 backdrop-blur-lg pt-[env(safe-area-inset-top)]' },
   template: `
     <!-- Offer bar: the gym's main promise, shown to visitors only -->
-    @if (!auth.loggedIn() && auth.ready()) {
-      <a routerLink="/reservar" [queryParams]="{ d: 'evaluacion' }" class="block bg-lime px-4 py-1.5 text-center text-sm font-semibold text-ink hover:bg-[#d8ff5c]">
-        Tu primera clase es gratis. Reserva en 30 segundos, sin crear cuenta.
+    @if (cfg.barraOferta.activo && !auth.loggedIn() && auth.ready()) {
+      <a [routerLink]="cfg.reservas.activo ? '/reservar' : '/'" [queryParams]="cfg.reservas.activo ? { d: 'evaluacion' } : null" class="block bg-blood-fill px-4 py-1.5 text-center text-sm font-semibold text-sand hover:bg-blood-hover">
+        {{ cfg.barraOferta.texto }}
       </a>
     }
     <div class="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 md:h-16 md:px-6">
       <a routerLink="/" class="shrink-0" aria-label="Blood & Sand, inicio">
-        <img src="img/logo.webp" alt="" width="510" height="115" class="h-6 w-auto md:h-7" />
+        <img src="img/logo-on-dark.webp" alt="" width="510" height="115" class="logo-dark h-6 w-auto md:h-7" />
+        <img src="img/logo-on-light.webp" alt="" width="510" height="115" loading="lazy" class="logo-light h-6 w-auto md:h-7" />
       </a>
 
       <nav class="hidden items-center gap-1 lg:flex" aria-label="Principal">
@@ -34,7 +38,19 @@ import { Icon } from '../shared/ui/icon';
         }
       </nav>
 
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5 md:gap-2">
+        @if (cfg.tema.modoClaro) {
+        <button
+          type="button"
+          class="grid size-10 place-items-center rounded-full text-bone/75 transition-colors hover:bg-iron-2 hover:text-bone"
+          (click)="theme.toggle()"
+          [attr.aria-label]="theme.theme() === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+          [attr.aria-pressed]="theme.theme() === 'light'"
+          [title]="theme.theme() === 'dark' ? 'Modo claro' : 'Modo oscuro'"
+        >
+          <bs-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" [size]="20" />
+        </button>
+        }
         @if (auth.user(); as u) {
           @if (store.membership(); as m) {
             <a routerLink="/mis-reservas" class="hidden items-center gap-1.5 rounded-full border border-steel px-3 py-1.5 text-sm xl:flex">
@@ -51,7 +67,7 @@ import { Icon } from '../shared/ui/icon';
             <bs-icon name="user" [size]="18" /> Ingresar
           </a>
         }
-        @if (!auth.isStaff()) {
+        @if (!auth.isStaff() && cfg.reservas.activo) {
           <a routerLink="/reservar" class="tape tape-sm">Reservar clase</a>
         }
       </div>
@@ -61,6 +77,8 @@ import { Icon } from '../shared/ui/icon';
 export class Header {
   protected readonly auth = inject(AuthService);
   protected readonly store = inject(BookingStore);
+  protected readonly theme = inject(ThemeService);
+  protected readonly cfg = inject(ConfigService).value;
 
   protected readonly initials = computed(() =>
     (this.auth.user()?.fullName ?? '')
@@ -72,16 +90,18 @@ export class Header {
   );
 
   protected readonly links = computed(() => {
+    const c = this.cfg;
     const base = [
       { to: '/', label: 'Inicio' },
-      { to: '/horario', label: 'Horario' },
-      { to: '/planes', label: 'Planes y precios' },
+      ...(c.horario ? [{ to: '/horario', label: 'Horario' }] : []),
+      ...(c.planes.activo ? [{ to: '/planes', label: 'Planes y precios' }] : []),
     ];
+    const adminHome = ADMIN_SECTIONS.find((s) => c.admin[s.key])?.to;
     switch (this.auth.role()) {
       case 'admin':
-        return [...base, { to: '/admin', label: 'Panel' }, { to: '/coach', label: 'Clases' }];
+        return [...base, ...(adminHome ? [{ to: adminHome, label: 'Panel' }] : []), ...(c.coach ? [{ to: '/coach', label: 'Clases' }] : [])];
       case 'coach':
-        return [...base, { to: '/coach', label: 'Mis clases' }];
+        return c.coach ? [...base, { to: '/coach', label: 'Mis clases' }] : base;
       case 'student':
         return [...base, { to: '/mis-reservas', label: 'Mis reservas' }];
       default:

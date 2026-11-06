@@ -2,6 +2,7 @@ import { HttpBackend, HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Api } from '../api/api.service';
+import { ConfigService } from '../config/app-config';
 import { Role, User } from '../models';
 
 /**
@@ -10,6 +11,7 @@ import { Role, User } from '../models';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly api = inject(Api);
+  private readonly config = inject(ConfigService);
   // Raw client without interceptors, so refresh can't recurse into itself.
   private readonly raw = new HttpClient(inject(HttpBackend));
 
@@ -63,7 +65,7 @@ export class AuthService {
   /** Rotates the refresh cookie. Parallel callers share one request. */
   refresh(): Promise<boolean> {
     this.refreshing ??= firstValueFrom(
-      this.raw.post<User>('/api/auth/refresh', {}, { withCredentials: true, headers: { 'X-Requested-With': 'XMLHttpRequest' } }),
+      this.raw.post<User>(this.config.apiUrl('/auth/refresh'), {}, { withCredentials: true, headers: { 'X-Requested-With': 'XMLHttpRequest' } }),
     )
       .then((u) => {
         this.user.set(u);

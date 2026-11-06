@@ -16,15 +16,17 @@
       Llega 10 minutos antes. Si no puedes venir, cancela desde Mis reservas hasta 3 horas antes y, si usaste tu plan, no pierdes la clase.
     </p>
     <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-      <button type="button" class="tape" (click)="addToCalendar(b)"><bs-icon name="download" /> Añadir a mi calendario</button>
-      @if (notifications.permission() !== 'granted') {
+      @if (cfg.reservas.agregarCalendario) {
+        <button type="button" class="tape" (click)="addToCalendar(b)"><bs-icon name="download" /> Añadir a mi calendario</button>
+      }
+      @if (cfg.notificaciones && notifications.permission() !== 'granted') {
         <button type="button" class="tape-ghost" (click)="enableAlerts(b)"><bs-icon name="bell" /> Avisarme antes de la clase</button>
       }
       @if (auth.loggedIn()) {
         <a routerLink="/mis-reservas" class="tape-ghost">Ver mis reservas</a>
       }
     </div>
-    @if (!auth.loggedIn()) {
+    @if (!auth.loggedIn() && cfg.cuentas.registro) {
       <div class="card mt-10 p-5">
         <p class="font-punch text-2xl font-extrabold italic">Guarda tus reservas</p>
         <p class="mt-1 text-bone/75">Crea tu cuenta con {{ b.email }} para ver, cancelar y comprar planes. Esta reserva quedará en tu cuenta.</p>
@@ -96,7 +98,7 @@
                     >
                       <span class="type-display row-span-2 text-4xl md:row-span-1">{{ x.start }}</span>
                       <span class="min-w-0">
-                        <span class="block font-punch text-2xl leading-tight font-extrabold italic">{{ x.discipline }}</span>
+                        <span class="flex items-center gap-2 font-punch text-2xl leading-tight font-extrabold italic"><span class="size-2.5 shrink-0 rounded-full" [class]="accent(x.slug).dot"></span>{{ x.discipline }}</span>
                         <span class="block text-sm text-ash">{{ x.coachName ?? 'Coach por confirmar' }} · hasta {{ x.end }}</span>
                       </span>
                       <span class="col-start-2 md:col-start-auto">
@@ -175,9 +177,11 @@
                     @if (busy()) { Reservando… } @else { Confirmar reserva }
                   </button>
                 } @else {
-                  <p class="mt-2 text-bone/70">
-                    ¿Vienes más de una vez por semana? Con un <a routerLink="/planes" class="text-lime underline underline-offset-4">plan</a> cada clase sale más barata.
-                  </p>
+                  @if (cfg.planes.activo) {
+                    <p class="mt-2 text-bone/70">
+                      ¿Vienes más de una vez por semana? Con un <a routerLink="/planes" class="text-lime underline underline-offset-4">plan</a> cada clase sale más barata.
+                    </p>
+                  }
                   @if (payError()) {
                     <p class="mt-4 rounded-[var(--radius-field)] border border-blood/50 bg-blood/10 p-4 text-sm" role="alert">{{ payError() }}</p>
                   }

@@ -6,28 +6,40 @@
 @import '@fontsource/barlow/latin-500.css';
 @import '@fontsource/barlow/latin-600.css';
 @import '@fontsource/barlow/latin-700.css';
-@import '@fontsource/barlow-condensed/latin-700-italic.css';
-@import '@fontsource/barlow-condensed/latin-800-italic.css';
 
 /*
- * Blood & Sand v2 tokens.
- * Black ground and lime from the wordmark. Lime = action/selection only; pink = scarcity only.
+ * Blood & Sand v3 palette — taken from the name and the brand pieces.
+ *   60%  warm darks (night / coal / line) — black with a sand undertone
+ *   30%  sand: body text on dark, and light "sand" sections that break the black
+ *   10%  accents, each with ONE job:
+ *        lime  = action & selection (buttons, selected states). Highest contrast on dark.
+ *        blood = energy & urgency (offer bar, featured plan, last spots, destructive)
+ *        pink  = campaign accent, used as the Funcional discipline color only
  * Radius scale encodes hierarchy: pill = actions & filters, 16px = cards, 8px = fields.
  */
 @theme {
-  --color-ink: #000000;
-  --color-iron: #131313; /* cards */
-  --color-iron-2: #1b1b1b; /* raised / hover */
-  --color-steel: #2a2a2a; /* borders */
-  --color-ash: #9a9a9a; /* secondary text (AA on iron) */
-  --color-bone: #f3f3ef;
+  --color-ink: #0e0d0c; /* night: page background, text on lime */
+  --color-iron: #181614; /* coal: cards */
+  --color-iron-2: #221f1c; /* raised / hover */
+  --color-steel: #35302a; /* lines and borders */
+  --color-ash: #a39a8e; /* secondary text, 6.4:1 on coal */
+  --color-bone: #efe6d6; /* sand: primary text on dark */
+
+  --color-sand: #efe6d6; /* light sections */
+  --color-sand-2: #e2d5bf; /* cards/borders on sand */
+  --color-char: #1a1714; /* text on sand */
+
   --color-lime: #c8fb32;
   --color-lime-dim: #9fcc1f;
-  --color-pink: #ff4fa3;
-  --color-blood: #ff4545;
+  --color-lime-hover: #d8ff5c;
+  --color-ok: #c8fb32; /* success / availability (lime on dark, green on light) */
+  --color-blood: #ff4d4d; /* text/borders on dark (5.6:1) */
+  --color-blood-fill: #e11d2a; /* fills with sand text (4.8:1) */
+  --color-blood-hover: #c8141f;
+  --color-pink: #e3338a;
 
   --font-display: 'Anton', 'Impact', 'Arial Narrow', sans-serif;
-  --font-punch: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-punch: 'Barlow', system-ui, sans-serif; /* subheads: serious tone in both modes */
   --font-sans: 'Barlow', system-ui, sans-serif;
 
   --radius-card: 1rem;
@@ -112,7 +124,7 @@
     @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-lime px-6 text-base font-semibold text-ink normal-case not-italic transition-[background-color,transform] duration-150 select-none;
   }
   .tape:hover {
-    background: #d8ff5c;
+    background: var(--color-lime-hover);
   }
   .tape:active {
     transform: scale(0.98);
@@ -167,4 +179,63 @@
 
 @utility pb-safe {
   padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+/* Lime focus rings disappear on sand; use dark ink there */
+.bg-sand :focus-visible,
+.bg-lime :focus-visible {
+  outline-color: var(--color-char);
+}
+
+/*
+ * ===== Light mode =====
+ * Familiar and serious: warm paper, near-black ink, no neon. The action color becomes ink
+ * (black buttons with paper text, like a sports-brand store); blood red stays as the brand accent;
+ * success turns into a calm green. Same token names, so every screen follows without template changes.
+ */
+:root[data-theme='light'] {
+  --color-ink: #faf8f5; /* page background, text on primary buttons */
+  --color-iron: #ffffff; /* cards */
+  --color-iron-2: #f2eee8; /* raised / hover */
+  --color-steel: #e3ddd4; /* borders */
+  --color-ash: #66605a; /* secondary text, 6.1:1 on white */
+  --color-bone: #1c1917; /* primary text */
+
+  --color-sand: #f1ebe2; /* light sections */
+  --color-sand-2: #e3dacb;
+  --color-char: #1c1917;
+
+  --color-lime: #1c1917; /* primary action = ink */
+  --color-lime-dim: #57534e; /* chart bars */
+  --color-lime-hover: #3a3532;
+  --color-ok: #15803d; /* green, 5.0:1 on white */
+  --color-blood: #b91c1c; /* 6.4:1 on white */
+  --color-blood-fill: #c8102e;
+  --color-blood-hover: #a50d26;
+  --color-pink: #be185d;
+}
+/* Serious tone (both modes): subheads use the body face, upright, sentence case */
+.font-punch {
+  font-style: normal;
+  letter-spacing: -0.01em;
+}
+.font-punch.uppercase {
+  text-transform: none;
+}
+:root[data-theme='light'] .tape:disabled {
+  color: #8a837b;
+}
+/* Cards get a soft shadow instead of relying on borders alone */
+:root[data-theme='light'] .card {
+  box-shadow: 0 1px 2px rgb(28 25 23 / 0.04), 0 4px 16px -6px rgb(28 25 23 / 0.08);
+}
+/* Logo swap: the wordmark ships in two transparent versions */
+.logo-light {
+  display: none;
+}
+:root[data-theme='light'] .logo-light {
+  display: block;
+}
+:root[data-theme='light'] .logo-dark {
+  display: none;
 }

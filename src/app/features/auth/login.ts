@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { ToastService } from '../../core/services/toast.service';
 import { FormState } from '../../shared/form-state';
+import { ConfigService } from '../../core/config/app-config';
 import { FieldError, FormMessage } from '../../shared/ui/field-error';
 
 @Component({
@@ -30,12 +31,14 @@ import { FieldError, FormMessage } from '../../shared/ui/field-error';
           <p class="mt-4 rounded-[var(--radius-field)] border-l-4 border-lime bg-iron p-3 text-sm">{{ reason() }}</p>
         }
 
+        @if (cfg.cuentas.registro) {
         <div role="tablist" class="mt-8 grid grid-cols-2 rounded-full border border-steel p-1" aria-label="Ingresar o crear cuenta">
           <button type="button" role="tab" [attr.aria-selected]="mode() === 'login'" (click)="switchTo('login')"
             class="min-h-10 rounded-full text-sm font-semibold" [class]="mode() === 'login' ? 'bg-lime text-ink' : 'text-bone/70'">Ingresar</button>
           <button type="button" role="tab" [attr.aria-selected]="mode() === 'register'" (click)="switchTo('register')"
             class="min-h-10 rounded-full text-sm font-semibold" [class]="mode() === 'register' ? 'bg-lime text-ink' : 'text-bone/70'">Crear cuenta</button>
         </div>
+        }
 
         <form class="mt-6 grid gap-5" (ngSubmit)="submit()" novalidate>
           @if (mode() === 'register') {
@@ -69,7 +72,7 @@ import { FieldError, FormMessage } from '../../shared/ui/field-error';
 
         @if (mode() === 'register') {
           <p class="mt-6 text-sm text-bone/65">Si ya reservaste antes como invitado con este correo, tus reservas aparecerán en tu cuenta.</p>
-        } @else {
+        } @else if (cfg.reservas.activo && cfg.cuentas.reservaSinCuenta) {
           <p class="mt-6 text-sm text-bone/65">
             ¿Solo quieres una clase? <a routerLink="/reservar" class="text-lime underline underline-offset-4">Resérvala sin cuenta</a>.
           </p>
@@ -86,7 +89,8 @@ export default class Login {
   readonly next = input<string>();
   readonly modo = input<string>();
 
-  protected readonly mode = linkedSignal<'login' | 'register'>(() => (this.modo() === 'registro' ? 'register' : 'login'));
+  protected readonly cfg = inject(ConfigService).value;
+  protected readonly mode = linkedSignal<'login' | 'register'>(() => (this.modo() === 'registro' && this.cfg.cuentas.registro ? 'register' : 'login'));
   protected readonly form = new FormState();
   protected draft = { email: '', password: '', fullName: '', phone: '' };
 

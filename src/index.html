@@ -6,8 +6,19 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content="Gimnasio Blood & Sand: box, fuerza y entrenamiento funcional. Reserva tu clase, agenda tu evaluación gratis y gestiona tu plan." />
-    <meta name="theme-color" content="#000000" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0e0d0c" />
+    <meta name="color-scheme" content="dark light" />
+    <script>
+      // Apply the saved (or system) theme before first paint to avoid a flash
+      (function () {
+        var t;
+        try { t = localStorage.getItem("bs:theme"); } catch (e) {}
+        if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        document.documentElement.dataset.theme = t;
+        document.documentElement.style.colorScheme = t;
+        if (t === "light") document.querySelector("meta[name=theme-color]").setAttribute("content", "#faf8f5");
+      })();
+    </script>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

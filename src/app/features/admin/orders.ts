@@ -95,7 +95,7 @@ const PAGE = 50;
               La reserva o el plan asociado se cancelan.
             </p>
             <bs-form-message [message]="refundForm.message()" />
-            <button type="button" class="mt-4 w-full bg-blood px-5 py-3 font-punch text-xl font-extrabold text-bone italic uppercase disabled:opacity-50" [disabled]="refundForm.busy()" (click)="refund(o)">
+            <button type="button" class="mt-4 w-full bg-blood-fill px-5 py-3 font-punch text-xl font-extrabold text-bone italic uppercase disabled:opacity-50" [disabled]="refundForm.busy()" (click)="refund(o)">
               Reembolsar {{ money(o.amount) }}
             </button>
           </div>

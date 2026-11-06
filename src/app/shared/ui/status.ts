@@ -2,20 +2,20 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 
 const LABELS: Record<string, [string, string]> = {
   // bookings
-  pending_payment: ['Esperando pago', 'border-pink text-pink'],
-  confirmed: ['Confirmada', 'border-lime text-lime'],
+  pending_payment: ['Esperando pago', 'border-bone/40 text-bone'],
+  confirmed: ['Confirmada', 'border-ok text-ok'],
   attended: ['Asistió', 'border-bone text-bone'],
   no_show: ['No vino', 'border-blood text-blood'],
   cancelled: ['Cancelada', 'border-steel text-ash'],
   // orders
-  pending: ['Pendiente', 'border-pink text-pink'],
-  paid: ['Pagada', 'border-lime text-lime'],
+  pending: ['Pendiente', 'border-bone/40 text-bone'],
+  paid: ['Pagada', 'border-ok text-ok'],
   failed: ['Rechazada', 'border-blood text-blood'],
   expired: ['Expirada', 'border-steel text-ash'],
   refunded: ['Reembolsada', 'border-bone text-bone'],
   // sessions / users
-  scheduled: ['Programada', 'border-lime text-lime'],
-  active: ['Activa', 'border-lime text-lime'],
+  scheduled: ['Programada', 'border-ok text-ok'],
+  active: ['Activa', 'border-ok text-ok'],
   inactive: ['Inactiva', 'border-steel text-ash'],
 };
 

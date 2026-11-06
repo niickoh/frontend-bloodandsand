@@ -10,8 +10,8 @@ import { monthName, toIso, weekdayShort } from '../../core/utils/date';
     <div class="mb-3 flex items-baseline justify-between">
       <p class="font-punch text-2xl font-extrabold italic capitalize">{{ month() }}</p>
       <p class="flex items-center gap-3 text-xs text-ash">
-        <span class="flex items-center gap-1"><span class="size-2 rounded-full bg-lime"></span>Cupos</span>
-        <span class="flex items-center gap-1"><span class="size-2 rounded-full bg-pink"></span>Últimos</span>
+        <span class="flex items-center gap-1"><span class="size-2 rounded-full bg-ok"></span>Cupos</span>
+        <span class="flex items-center gap-1"><span class="size-2 rounded-full bg-blood"></span>Últimos</span>
       </p>
     </div>
     <div role="listbox" aria-label="Elige el día" class="scrollbar-none -mx-4 flex snap-x gap-1.5 overflow-x-auto px-4 md:mx-0 md:grid md:grid-cols-7 md:overflow-visible md:px-0">
@@ -34,7 +34,7 @@ import { monthName, toIso, weekdayShort } from '../../core/utils/date';
         >
           <span class="text-xs font-semibold capitalize">{{ d.today ? 'Hoy' : d.wd }}</span>
           <span class="font-display text-2xl leading-none">{{ d.day }}</span>
-          <span class="size-1.5 rounded-full" [class]="d.iso === selected() ? 'bg-ink' : d.state === 'libre' ? 'bg-lime' : d.state === 'pocos' ? 'bg-pink' : 'bg-transparent'"></span>
+          <span class="size-1.5 rounded-full" [class]="d.iso === selected() ? 'bg-ink' : d.state === 'libre' ? 'bg-ok' : d.state === 'pocos' ? 'bg-blood' : 'bg-transparent'"></span>
         </button>
       }
     </div>

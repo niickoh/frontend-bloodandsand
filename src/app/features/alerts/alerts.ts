@@ -4,6 +4,7 @@ import { PwaService } from '../../core/services/pwa.service';
 import { ToastService } from '../../core/services/toast.service';
 import { persistedSignal } from '../../core/services/storage';
 import { Icon } from '../../shared/ui/icon';
+import { ConfigService } from '../../core/config/app-config';
 
 type PrefKey = 'reminders' | 'changes' | 'promos';
 
@@ -14,11 +15,12 @@ type PrefKey = 'reminders' | 'changes' | 'promos';
   template: `
     <section class="mx-auto max-w-3xl px-4 pt-8 pb-28 md:px-6 md:pt-12">
       <h1 class="page-title">
-        <span class="type-display block">Avisos</span>
-        <span class="type-outline block">y app</span>
+        <span class="type-display block">{{ cfg.notificaciones ? 'Avisos' : 'Instala' }}</span>
+        <span class="type-outline block">{{ cfg.notificaciones && cfg.instalarApp ? 'y app' : cfg.notificaciones ? '' : 'la app' }}</span>
       </h1>
 
       <!-- Notifications status -->
+      @if (cfg.notificaciones) {
       <div class="card mt-10 p-5 md:p-6">
         <div class="flex items-start gap-4">
           <span class="grid size-11 shrink-0 place-items-center rounded-full" [class]="granted() ? 'bg-lime text-ink' : 'bg-steel text-bone'"><bs-icon name="bell" /></span>
@@ -37,8 +39,10 @@ type PrefKey = 'reminders' | 'changes' | 'promos';
         </div>
       </div>
 
+      }
+
       <!-- Install -->
-      @if (!n.isStandalone) {
+      @if (cfg.instalarApp && !n.isStandalone) {
         <div class="card mt-6 p-5 md:p-6">
           <h2 class="font-punch text-2xl font-extrabold italic">Instala la app</h2>
           @if (n.isIos) {
@@ -58,6 +62,7 @@ type PrefKey = 'reminders' | 'changes' | 'promos';
       }
 
       <!-- Preferences -->
+      @if (cfg.notificaciones) {
       <h2 class="mt-12 font-punch text-3xl font-extrabold italic">Qué quieres recibir</h2>
       <ul class="mt-4 divide-y divide-steel border-y border-steel">
         @for (p of prefList; track p.key) {
@@ -73,12 +78,14 @@ type PrefKey = 'reminders' | 'changes' | 'promos';
           </li>
         }
       </ul>
+      }
     </section>
   `,
 })
 export default class Alerts {
   protected readonly n = inject(NotificationService);
   protected readonly pwa = inject(PwaService);
+  protected readonly cfg = inject(ConfigService).value;
   private readonly toast = inject(ToastService);
 
   protected readonly prefs = persistedSignal<Record<PrefKey, boolean>>('prefs', { reminders: true, changes: true, promos: false });

@@ -83,6 +83,8 @@ const luhn = (digits: string) => {
       <button type="button" class="tape mt-5 w-full tape-lg" [disabled]="busy()" (click)="paid.emit({ provider: provider() })">
         @if (busy()) { Conectando… } @else { Pagar {{ money(amount()) }} con {{ label() }} }
       </button>
+    } @else if (payments.ready()) {
+      <p class="mt-4 rounded-[var(--radius-field)] border border-steel p-4 text-sm text-bone/75">Los pagos en línea no están disponibles por ahora. Escríbenos o paga en recepción.</p>
     } @else {
       <p class="mt-4 text-sm text-ash">Cargando medios de pago…</p>
     }

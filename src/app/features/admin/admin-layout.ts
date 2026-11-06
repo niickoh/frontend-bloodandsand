@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { Icon, IconName } from '../../shared/ui/icon';
+import { Icon } from '../../shared/ui/icon';
+import { ConfigService } from '../../core/config/app-config';
+import { ADMIN_SECTIONS } from '../../core/config/guards';
 
 /** Admin shell: sidebar on desktop, scrollable tabs on phones. */
 @Component({
@@ -29,14 +31,6 @@ import { Icon, IconName } from '../../shared/ui/icon';
   `,
 })
 export default class AdminLayout {
-  protected readonly links: { to: string; label: string; icon: IconName }[] = [
-    { to: '/admin', label: 'Resumen', icon: 'chart' },
-    { to: '/admin/clases', label: 'Clases', icon: 'calendar' },
-    { to: '/admin/reservas', label: 'Reservas', icon: 'ticket' },
-    { to: '/admin/horario', label: 'Horario semanal', icon: 'grid' },
-    { to: '/admin/usuarios', label: 'Usuarios', icon: 'users' },
-    { to: '/admin/pagos', label: 'Pagos', icon: 'card' },
-    { to: '/admin/catalogo', label: 'Disciplinas y planes', icon: 'tag' },
-    { to: '/admin/avisos', label: 'Avisos push', icon: 'megaphone' },
-  ];
+  private readonly admin = inject(ConfigService).value.admin;
+  protected readonly links = ADMIN_SECTIONS.filter((s) => this.admin[s.key]);
 }

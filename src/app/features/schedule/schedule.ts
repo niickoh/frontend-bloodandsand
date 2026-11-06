@@ -3,9 +3,9 @@ import { RouterLink } from '@angular/router';
 import { BookingStore } from '../../core/services/booking.store';
 import { CatalogStore } from '../../core/services/catalog.store';
 import { isoWeekday, toIso } from '../../core/utils/date';
+import { accentFor } from '../../core/data/catalog';
 
 const WEEKDAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-const TONES = ['border-l-lime', 'border-l-bone', 'border-l-pink', 'border-l-ash'];
 
 @Component({
   selector: 'bs-schedule',
@@ -97,7 +97,7 @@ export default class Schedule implements OnInit {
   }
 
   protected slugOf = (id: number) => this.catalog.disciplines().find((d) => d.id === id)?.slug ?? 'todas';
-  protected tone = (id: number) => TONES[Math.max(0, this.catalog.disciplines().findIndex((d) => d.id === id)) % TONES.length];
+  protected tone = (id: number) => accentFor(this.slugOf(id)).border;
 
   protected readonly columns = computed(() => {
     const f = this.filter();

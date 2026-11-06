@@ -42,7 +42,7 @@ import { Icon } from '../../shared/ui/icon';
             <div class="mt-6 h-1.5 w-full overflow-hidden rounded-full bg-steel"><div class="bar h-full w-1/3 rounded-full bg-lime"></div></div>
           }
           @default {
-            <span class="grid size-14 place-items-center rounded-full bg-blood text-bone"><bs-icon name="x" [size]="30" /></span>
+            <span class="grid size-14 place-items-center rounded-full bg-blood-fill text-bone"><bs-icon name="x" [size]="30" /></span>
             <h1 class="mt-6 text-[clamp(3rem,13vw,6rem)]"><span class="type-display block">Pago no</span><span class="type-outline block">realizado</span></h1>
             <p class="mt-6 text-bone/75">{{ failText(o.status) }} No se hizo ningún cargo y el cupo quedó libre.</p>
             <div class="mt-8 flex flex-wrap gap-3">

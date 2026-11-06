@@ -10,10 +10,12 @@ import { ToastService } from '../../core/services/toast.service';
 import { Booking, Quote } from '../../core/models';
 import { longDate, money, toIso } from '../../core/utils/date';
 import { downloadIcs } from '../../core/utils/ics';
+import { accentFor } from '../../core/data/catalog';
 import { DayStrip } from './day-strip';
 import { PlateMeter } from '../../shared/ui/plate-meter';
 import { Icon } from '../../shared/ui/icon';
 import { PaymentForm, PayRequest } from '../../shared/payment-form';
+import { ConfigService } from '../../core/config/app-config';
 
 type Step = 1 | 2 | 3;
 
@@ -28,6 +30,7 @@ export default class BookingPage {
   protected readonly catalog = inject(CatalogStore);
   protected readonly auth = inject(AuthService);
   protected readonly notifications = inject(NotificationService);
+  protected readonly cfg = inject(ConfigService).value;
   private readonly payments = inject(PaymentService);
   private readonly toast = inject(ToastService);
 
@@ -38,6 +41,7 @@ export default class BookingPage {
 
   protected readonly money = money;
   protected readonly longDate = longDate;
+  protected readonly accent = accentFor;
 
   protected readonly filters = computed(() => [{ id: 'todas', label: 'Todas' }, ...this.catalog.disciplines().map((x) => ({ id: x.slug, label: x.name }))]);
   protected readonly filter = linkedSignal(() => this.d() || 'todas');

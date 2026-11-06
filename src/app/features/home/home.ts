@@ -3,12 +3,13 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { BookingStore } from '../../core/services/booking.store';
 import { CatalogStore } from '../../core/services/catalog.store';
-import { GYM, imageFor } from '../../core/data/catalog';
+import { GYM, accentFor, imageFor } from '../../core/data/catalog';
 import { money, toIso, longDate } from '../../core/utils/date';
 import { PlateMeter } from '../../shared/ui/plate-meter';
 import { SectionTitle } from '../../shared/ui/section-title';
 import { PlanList } from '../../shared/plan-list';
 import { Icon, IconName } from '../../shared/ui/icon';
+import { ConfigService } from '../../core/config/app-config';
 
 @Component({
   selector: 'bs-home',
@@ -21,8 +22,11 @@ export default class Home {
   private readonly store = inject(BookingStore);
   private readonly catalog = inject(CatalogStore);
   protected readonly auth = inject(AuthService);
+  protected readonly cfg = inject(ConfigService).value;
+  protected readonly on = this.cfg.inicio;
   protected readonly disciplines = this.catalog.disciplines;
   protected readonly imageFor = imageFor;
+  protected readonly accent = accentFor;
   protected readonly gym = GYM;
   protected readonly money = money;
   protected readonly sessionsLoaded = this.store.sessionsLoaded;

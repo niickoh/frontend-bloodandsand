@@ -7,7 +7,9 @@ import { Booking } from '../../core/models';
 import { fromIso, longDate, money, weekdayShort } from '../../core/utils/date';
 import { downloadIcs } from '../../core/utils/ics';
 import { Icon } from '../../shared/ui/icon';
+import { accentFor } from '../../core/data/catalog';
 import { PAYMENT_LABEL, Status } from '../../shared/ui/status';
+import { ConfigService } from '../../core/config/app-config';
 
 @Component({
   selector: 'bs-my-bookings',
@@ -34,7 +36,7 @@ import { PAYMENT_LABEL, Status } from '../../shared/ui/status';
       } @else {
         <div class="card mt-8 flex flex-wrap items-center justify-between gap-4 p-5">
           <p class="max-w-[44ch] text-bone/80">Sin plan activo: cada clase se paga al reservar. Con un plan reservas sin pagar cada vez.</p>
-          <a routerLink="/planes" class="tape">Ver planes</a>
+          @if (cfg.planes.activo) { <a routerLink="/planes" class="tape">Ver planes</a> }
         </div>
       }
 
@@ -53,12 +55,14 @@ import { PAYMENT_LABEL, Status } from '../../shared/ui/status';
                 <p class="mt-1 text-xs text-bone/50">Código {{ b.code }}</p>
               </div>
               <div class="col-span-2 flex border-t border-steel sm:col-span-1 sm:flex-col sm:border-t-0 sm:border-l">
-                <button type="button" class="flex flex-1 items-center justify-center gap-1.5 px-4 py-3 text-sm hover:bg-steel" (click)="ics(b)">
-                  <bs-icon name="download" [size]="16" /> Calendario
-                </button>
-                @if (b.canCancel) {
+                @if (cfg.reservas.agregarCalendario) {
+                  <button type="button" class="flex flex-1 items-center justify-center gap-1.5 px-4 py-3 text-sm hover:bg-steel" (click)="ics(b)">
+                    <bs-icon name="download" [size]="16" /> Calendario
+                  </button>
+                }
+                @if (b.canCancel && cfg.reservas.cancelar) {
                   @if (confirming() === b.id) {
-                    <button type="button" class="flex flex-1 items-center justify-center gap-1.5 bg-blood px-4 py-3 text-sm font-semibold text-bone" (click)="cancel(b)" [disabled]="busy()">
+                    <button type="button" class="flex flex-1 items-center justify-center gap-1.5 bg-blood-fill px-4 py-3 text-sm font-semibold text-bone" (click)="cancel(b)" [disabled]="busy()">
                       {{ busy() ? 'Cancelando…' : 'Sí, cancelar' }}
                     </button>
                   } @else {
@@ -86,7 +90,7 @@ import { PAYMENT_LABEL, Status } from '../../shared/ui/status';
       } @else {
         <div class="mt-4 rounded-[var(--radius-card)] border border-dashed border-steel p-6">
           <p class="text-bone/75">No tienes clases reservadas. Elige un horario y asegura tu cupo.</p>
-          <a routerLink="/reservar" class="tape mt-4">Reservar clase</a>
+          @if (cfg.reservas.activo) { <a routerLink="/reservar" class="tape mt-4">Reservar clase</a> }
         </div>
       }
 
@@ -109,6 +113,7 @@ import { PAYMENT_LABEL, Status } from '../../shared/ui/status';
   `,
 })
 export default class MyBookings implements OnInit {
+  protected readonly cfg = inject(ConfigService).value;
   protected readonly store = inject(BookingStore);
   private readonly toast = inject(ToastService);
   protected readonly confirming = signal<number | null>(null);
@@ -121,7 +126,7 @@ export default class MyBookings implements OnInit {
 
   protected wd = (iso: string) => weekdayShort(fromIso(iso));
   protected day = (iso: string) => fromIso(iso).getDate();
-  protected tone = (slug: string) => (slug === 'box' ? 'text-lime' : slug === 'funcional' ? 'text-pink' : 'text-bone');
+  protected tone = (slug: string) => accentFor(slug).text;
   protected payLabel = (b: Booking) => (b.payment === 'paid' ? `Pagada ${money(b.amount)}` : PAYMENT_LABEL[b.payment]);
 
   protected ics(b: Booking) {

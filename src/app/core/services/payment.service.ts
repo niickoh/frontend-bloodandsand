@@ -1,4 +1,5 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { ConfigService } from '../config/app-config';
 import { Api } from '../api/api.service';
 import { Checkout, Contact, Order, Provider } from '../models';
 
@@ -6,11 +7,20 @@ import { Checkout, Contact, Order, Provider } from '../models';
 @Injectable({ providedIn: 'root' })
 export class PaymentService {
   private readonly api = inject(Api);
-  readonly providers = signal<Provider[]>([]);
+  private readonly cfg = inject(ConfigService).value.pagos;
+  private readonly all = signal<Provider[]>([]);
+  /** Providers the API offers AND config.json leaves on (pagos.simulado / webpay / mercadopago). */
+  readonly providers = computed(() =>
+    this.all().filter((p) => (p.name === 'fake' ? this.cfg.simulado : (this.cfg as Record<string, boolean>)[p.name] ?? true)),
+  );
+  readonly ready = signal(false);
   private loaded: Promise<void> | null = null;
 
   loadProviders() {
-    this.loaded ??= this.api.get<Provider[]>('/payments/providers').then((p) => this.providers.set(p));
+    this.loaded ??= this.api.get<Provider[]>('/payments/providers').then((p) => {
+      this.all.set(p);
+      this.ready.set(true);
+    });
     return this.loaded;
   }
 

@@ -6,12 +6,14 @@ import { AuthService } from '../../core/auth/auth.service';
 import { ROLE_LABEL } from '../../core/data/catalog';
 import { BookingStore } from '../../core/services/booking.store';
 import { ToastService } from '../../core/services/toast.service';
+import { ThemeService } from '../../core/services/theme.service';
 import { Order } from '../../core/models';
 import { longDate, money } from '../../core/utils/date';
 import { FormState } from '../../shared/form-state';
 import { FieldError, FormMessage } from '../../shared/ui/field-error';
 import { Icon } from '../../shared/ui/icon';
 import { Status } from '../../shared/ui/status';
+import { ConfigService } from '../../core/config/app-config';
 
 @Component({
   selector: 'bs-account',
@@ -28,9 +30,9 @@ import { Status } from '../../shared/ui/status';
 
         <div class="mt-8 flex flex-wrap gap-2">
           @if (auth.isAdmin()) { <a routerLink="/admin" class="tape"><bs-icon name="chart" /> Panel de admin</a> }
-          @if (auth.isStaff()) { <a routerLink="/coach" class="tape-ghost"><bs-icon name="calendar" /> Mis clases</a> }
+          @if (auth.isStaff() && cfg.coach) { <a routerLink="/coach" class="tape-ghost"><bs-icon name="calendar" /> Mis clases</a> }
           @if (!auth.isStaff()) { <a routerLink="/mis-reservas" class="tape-ghost"><bs-icon name="ticket" /> Mis reservas</a> }
-          <a routerLink="/avisos" class="tape-ghost"><bs-icon name="bell" /> Avisos</a>
+          @if (cfg.notificaciones || cfg.instalarApp) { <a routerLink="/avisos" class="tape-ghost"><bs-icon name="bell" /> Avisos</a> }
         </div>
 
         <div class="mt-12 grid gap-10 md:grid-cols-2">
@@ -99,7 +101,21 @@ import { Status } from '../../shared/ui/status';
           }
         }
 
-        <button type="button" class="mt-14 inline-flex items-center gap-2 text-bone/70 hover:text-blood" (click)="logout()">
+        @if (cfg.tema.modoClaro) {
+        <h2 class="mt-14 font-punch text-3xl font-extrabold italic">Apariencia</h2>
+        <div role="radiogroup" aria-label="Tema" class="mt-4 inline-grid grid-cols-2 rounded-full border border-steel p-1">
+          <button type="button" role="radio" [attr.aria-checked]="theme.theme() === 'dark'" (click)="theme.set('dark')"
+            class="inline-flex min-h-10 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold" [class]="theme.theme() === 'dark' ? 'bg-lime text-ink' : 'text-bone/70'">
+            <bs-icon name="moon" [size]="16" /> Oscuro
+          </button>
+          <button type="button" role="radio" [attr.aria-checked]="theme.theme() === 'light'" (click)="theme.set('light')"
+            class="inline-flex min-h-10 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold" [class]="theme.theme() === 'light' ? 'bg-lime text-ink' : 'text-bone/70'">
+            <bs-icon name="sun" [size]="16" /> Claro
+          </button>
+        </div>
+        }
+
+        <button type="button" class="mt-12 inline-flex items-center gap-2 text-bone/70 hover:text-blood" (click)="logout()">
           <bs-icon name="logout" /> Cerrar sesión
         </button>
       }
@@ -109,6 +125,8 @@ import { Status } from '../../shared/ui/status';
 export default class Account implements OnInit {
   protected readonly auth = inject(AuthService);
   protected readonly store = inject(BookingStore);
+  protected readonly theme = inject(ThemeService);
+  protected readonly cfg = inject(ConfigService).value;
   private readonly api = inject(Api);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);

@@ -31,7 +31,7 @@ import { Roster as RosterData, StaffApi, StudentHit } from './staff-api';
             <h1 class="type-display text-[clamp(2.75rem,10vw,5rem)]">{{ s.discipline }} {{ s.start }}</h1>
             <p class="text-bone/70">{{ s.coachName ?? 'Sin coach asignado' }} · hasta {{ s.end }}</p>
             @if (s.status === 'cancelled') { <p class="mt-2"><bs-status value="cancelled" /> <span class="ml-2 text-sm text-ash">{{ s.note }}</span></p> }
-            @else if (s.note) { <p class="mt-2 text-sm text-pink">{{ s.note }}</p> }
+            @else if (s.note) { <p class="mt-2 text-sm text-blood">{{ s.note }}</p> }
           </div>
           <div class="flex flex-col items-start gap-3 sm:items-end">
             <bs-plate-meter [taken]="s.taken" [capacity]="s.capacity" />
@@ -59,7 +59,7 @@ import { Roster as RosterData, StaffApi, StudentHit } from './staff-api';
                   <button type="button" (click)="setStatus(b, 'attended')" [disabled]="busyId() === b.id"
                     class="min-h-10 rounded-full border px-4 text-sm font-semibold" [class]="b.status === 'attended' ? 'border-lime bg-lime text-ink' : 'border-steel hover:border-lime'">Asistió</button>
                   <button type="button" (click)="setStatus(b, 'no_show')" [disabled]="busyId() === b.id"
-                    class="min-h-10 rounded-full border px-4 text-sm font-semibold" [class]="b.status === 'no_show' ? 'border-blood bg-blood text-bone' : 'border-steel hover:border-blood'">No vino</button>
+                    class="min-h-10 rounded-full border px-4 text-sm font-semibold" [class]="b.status === 'no_show' ? 'border-blood bg-blood-fill text-bone' : 'border-steel hover:border-blood'">No vino</button>
                   <button type="button" class="grid size-10 place-items-center rounded-full border border-steel hover:border-ash" (click)="openEdit(b)" [attr.aria-label]="'Editar reserva de ' + b.name"><bs-icon name="edit" [size]="18" /></button>
                   <button type="button" class="grid size-10 place-items-center rounded-full border border-steel hover:border-ash" (click)="openMove(b)" [attr.aria-label]="'Cambiar de clase a ' + b.name"><bs-icon name="move" [size]="18" /></button>
                   <button type="button" class="grid size-10 place-items-center rounded-full border border-steel hover:border-blood hover:text-blood" (click)="setStatus(b, 'cancelled')" [attr.aria-label]="'Cancelar reserva de ' + b.name"><bs-icon name="x" [size]="18" /></button>

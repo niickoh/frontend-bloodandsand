@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { ConfigService } from '../config/app-config';
 import { toApiError } from './api-error';
 
 type Params = Record<string, string | number | boolean | null | undefined>;
@@ -9,6 +10,7 @@ type Params = Record<string, string | number | boolean | null | undefined>;
 @Injectable({ providedIn: 'root' })
 export class Api {
   private readonly http = inject(HttpClient);
+  private readonly config = inject(ConfigService);
 
   private params(p?: Params) {
     let hp = new HttpParams();
@@ -27,18 +29,18 @@ export class Api {
   }
 
   get<T>(path: string, params?: Params) {
-    return this.run(firstValueFrom(this.http.get<T>('/api' + path, { params: this.params(params) })));
+    return this.run(firstValueFrom(this.http.get<T>(this.config.apiUrl(path), { params: this.params(params) })));
   }
   post<T>(path: string, body: unknown = {}) {
-    return this.run(firstValueFrom(this.http.post<T>('/api' + path, body)));
+    return this.run(firstValueFrom(this.http.post<T>(this.config.apiUrl(path), body)));
   }
   put<T>(path: string, body: unknown) {
-    return this.run(firstValueFrom(this.http.put<T>('/api' + path, body)));
+    return this.run(firstValueFrom(this.http.put<T>(this.config.apiUrl(path), body)));
   }
   patch<T>(path: string, body: unknown) {
-    return this.run(firstValueFrom(this.http.patch<T>('/api' + path, body)));
+    return this.run(firstValueFrom(this.http.patch<T>(this.config.apiUrl(path), body)));
   }
   delete<T>(path: string, body?: unknown) {
-    return this.run(firstValueFrom(this.http.delete<T>('/api' + path, { body })));
+    return this.run(firstValueFrom(this.http.delete<T>(this.config.apiUrl(path), { body })));
   }
 }

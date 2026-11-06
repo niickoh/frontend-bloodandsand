@@ -19,7 +19,7 @@ import { Icon } from './icon';
         [class.border-blood]="t.kind === 'error'"
         role="status"
       >
-        <span class="mt-0.5 grid size-6 place-items-center rounded-full" [class]="t.kind === 'error' ? 'bg-blood text-bone' : 'bg-ink text-lime'">
+        <span class="mt-0.5 grid size-6 place-items-center rounded-full" [class]="t.kind === 'error' ? 'bg-blood-fill text-bone' : 'bg-ink text-lime'">
           <bs-icon [name]="t.kind === 'error' ? 'x' : t.kind === 'info' ? 'clock' : 'check'" [size]="14" />
         </span>
         <div class="min-w-0 flex-1">

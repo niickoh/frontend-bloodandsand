@@ -100,7 +100,7 @@ import { AdminApi } from './admin-api';
         <p class="mt-2 text-sm text-bone/70">Se cancelan todas las reservas, se devuelven las clases de plan y se avisa a cada persona. Los pagos de clase suelta se reembolsan desde Pagos.</p>
         <label class="mt-4 block"><span class="field-label">Motivo (se incluye en el aviso)</span><input class="field" [(ngModel)]="reason" maxlength="200" placeholder="Ej: el coach está enfermo" /></label>
         <bs-form-message [message]="form.message()" />
-        <button type="button" class="mt-5 w-full bg-blood px-5 py-3 font-punch text-xl font-extrabold text-bone italic uppercase disabled:opacity-50" [disabled]="form.busy()" (click)="confirmCancel()">Cancelar clase y avisar</button>
+        <button type="button" class="mt-5 w-full bg-blood-fill px-5 py-3 font-punch text-xl font-extrabold text-bone italic uppercase disabled:opacity-50" [disabled]="form.busy()" (click)="confirmCancel()">Cancelar clase y avisar</button>
       }
     </bs-modal>
   `,

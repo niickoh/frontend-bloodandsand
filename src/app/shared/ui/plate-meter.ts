@@ -18,7 +18,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
         ></span>
       }
     </span>
-    <span class="font-punch text-base font-bold italic" [class]="left() === 0 ? 'text-ash' : left() <= 3 ? 'text-pink' : 'text-bone'">
+    <span class="font-punch text-base font-bold italic" [class]="left() === 0 ? 'text-ash' : left() <= 3 ? 'text-blood' : 'text-bone'">
       {{ text() }}
     </span>
   `,
@@ -28,7 +28,7 @@ export class PlateMeter {
   readonly capacity = input.required<number>();
 
   readonly left = computed(() => Math.max(0, this.capacity() - this.taken()));
-  readonly tone = computed(() => (this.left() <= 3 ? 'bg-pink' : 'bg-lime'));
+  readonly tone = computed(() => (this.left() <= 3 ? 'bg-blood' : 'bg-ok'));
 
   readonly plates = computed(() => {
     const cap = this.capacity();

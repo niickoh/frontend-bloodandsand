@@ -5,6 +5,7 @@ import { CatalogStore } from '../core/services/catalog.store';
 import { Plan } from '../core/models';
 import { money } from '../core/utils/date';
 import { Icon } from './ui/icon';
+import { ConfigService } from '../core/config/app-config';
 
 /**
  * Pricing table. Store pattern: unit price per class so plans compare at a glance,
@@ -24,12 +25,12 @@ import { Icon } from './ui/icon';
       @for (p of plans(); track p.id) {
         <li
           class="relative flex flex-col rounded-[var(--radius-card)] p-6"
-          [class]="p.featured ? 'bg-lime text-ink md:col-span-2 lg:col-span-1 lg:-my-3 lg:py-9' : 'border border-steel bg-iron'"
+          [class]="p.featured ? 'border-2 border-blood-fill bg-iron-2 shadow-[0_24px_60px_-24px_rgba(225,29,42,0.55)] md:col-span-2 lg:col-span-1 lg:-my-3 lg:py-9' : 'border border-steel bg-iron'"
         >
           <div class="flex items-start justify-between gap-3">
             <h3 class="text-xl font-bold">{{ p.name }}</h3>
             @if (p.featured) {
-              <span class="rounded-full bg-ink px-3 py-1 text-xs font-bold text-lime">Más elegido</span>
+              <span class="rounded-full bg-blood-fill px-3 py-1 text-xs font-bold text-sand">Más elegido</span>
             } @else if (store.membership()?.planId === p.id) {
               <span class="rounded-full border border-lime px-3 py-1 text-xs font-bold text-lime">Tu plan</span>
             }
@@ -37,14 +38,14 @@ import { Icon } from './ui/icon';
 
           <p class="mt-4 flex items-baseline gap-1.5">
             <span class="type-display text-5xl">{{ money(p.price) }}</span>
-            <span class="text-sm" [class]="p.featured ? 'text-ink/70' : 'text-ash'">{{ period(p) }}</span>
+            <span class="text-sm text-ash">{{ period(p) }}</span>
           </p>
-          <p class="mt-1 text-sm font-semibold" [class]="p.featured ? 'text-ink/80' : 'text-lime'">{{ unit(p) }}</p>
+          <p class="mt-1 text-sm font-semibold text-lime">{{ unit(p) }}</p>
 
           <ul class="mt-6 flex-1 space-y-2.5 text-[0.95rem]">
             @for (perk of p.perks; track perk) {
               <li class="flex gap-2.5">
-                <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full" [class]="p.featured ? 'bg-ink text-lime' : 'bg-iron-2 text-lime'">
+                <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full" [class]="p.featured ? 'bg-blood-fill text-sand' : 'bg-iron-2 text-lime'">
                   <bs-icon name="check" [size]="13" />
                 </span>
                 {{ perk }}
@@ -53,11 +54,13 @@ import { Icon } from './ui/icon';
           </ul>
 
           @if (store.membership()?.planId === p.id) {
-            <a routerLink="/reservar" class="mt-7 w-full" [class]="p.featured ? 'tape bg-ink! text-lime! hover:bg-iron!' : 'tape-ghost'">Reservar con mi plan</a>
-          } @else if (!p.sellable) {
-            <a routerLink="/reservar" class="tape-ghost mt-7 w-full">Reservar una clase</a>
+            <a routerLink="/reservar" class="tape-ghost mt-7 w-full">Reservar con mi plan</a>
+          } @else if (!p.sellable || !cfg.planes.comprar) {
+            @if (cfg.reservas.activo) {
+              <a routerLink="/reservar" class="tape-ghost mt-7 w-full">Reservar una clase</a>
+            }
           } @else {
-            <a [routerLink]="['/planes', p.slug, 'pago']" class="mt-7 w-full" [class]="p.featured ? 'tape bg-ink! text-lime! hover:bg-iron!' : 'tape'">Elegir {{ p.name }}</a>
+            <a [routerLink]="['/planes', p.slug, 'pago']" class="mt-7 w-full" [class]="p.featured ? 'tape tape-lg' : 'tape-ghost'">Elegir {{ p.name }}</a>
           }
         </li>
       }
@@ -75,6 +78,7 @@ import { Icon } from './ui/icon';
 export class PlanList {
   protected readonly store = inject(BookingStore);
   protected readonly catalog = inject(CatalogStore);
+  protected readonly cfg = inject(ConfigService).value;
   protected readonly money = money;
 
   /** Drop-in first, then by price, so the ladder reads left to right. */

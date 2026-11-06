@@ -71,3 +71,32 @@ por el gimnasio, y los avisos que mande el admin. El service worker solo corre e
 
 `public/img` se generó a partir de las piezas de marca (recortes en blanco y negro, logo e isotipo). Reemplázalas por
 las fotos originales en alta cuando las tengas, con los mismos nombres.
+
+## Activar y desactivar funcionalidades (sin rebuild)
+
+Todo se controla desde `public/config/config.json`, que queda tal cual en `dist/.../browser/config/config.json`.
+Edita ese archivo en el servidor y recarga la página: la app lo lee al iniciar, sin caché (si no hay conexión usa la última copia leída).
+Si falta una clave, queda activa con su valor por defecto (`src/app/core/config/app-config.ts`).
+
+| Clave | Qué hace al desactivarla (`false`) |
+| --- | --- |
+| `mantenimiento.activo` (`true` lo enciende) | Muestra «Volvemos pronto» con `mensaje` a todos menos al admin, que puede ingresar desde «Acceso del equipo». |
+| `tema.modoClaro` | Quita el botón sol/luna y la sección Apariencia; todos ven modo oscuro. |
+| `tema.porDefecto` | `"sistema"`, `"oscuro"` o `"claro"`: tema de quien nunca eligió uno. |
+| `barraOferta.activo` / `texto` | Oculta la barra roja superior o cambia su texto. |
+| `cuentas.registro` | Oculta «Crear cuenta» (solo ingresan cuentas existentes). |
+| `cuentas.reservaSinCuenta` | Para reservar hay que ingresar primero. |
+| `reservas.activo` | Quita «Reservar» de menús e inicio; `/reservar` redirige al horario. |
+| `reservas.cancelar` | Los alumnos ya no pueden cancelar desde Mis reservas. |
+| `reservas.agregarCalendario` | Oculta «Añadir a mi calendario». |
+| `horario` | Oculta y bloquea `/horario`. |
+| `planes.activo` | Oculta y bloquea `/planes` y la sección de planes del inicio. |
+| `planes.comprar` | Los planes se muestran pero no se pueden comprar. |
+| `pagos.simulado` / `webpay` / `mercadopago` | Oculta ese medio de pago (además debe estar habilitado en el backend con `PAYMENT_PROVIDERS`). |
+| `notificaciones` | Oculta los avisos push. |
+| `instalarApp` | Oculta la ayuda para instalar la app. |
+| `inicio.*` | Oculta cada sección del inicio: `garantias`, `proximasClases`, `disciplinas`, `comoFunciona`, `planes`, `ubicacion`, `preguntas`, `galeria`, `bannerFinal`. |
+| `coach` | Oculta y bloquea el área de coach. |
+| `admin.*` | Oculta y bloquea cada sección del panel: `resumen`, `clases`, `reservas`, `horario`, `usuarios`, `pagos`, `catalogo`, `avisos`. |
+
+> Estos switches ocultan y bloquean pantallas en el front. Las reglas de negocio que deben ser estrictas (precios, primera clase gratis, medios de pago) siguen las decide el backend con su `.env`.

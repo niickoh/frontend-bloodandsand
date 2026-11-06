@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-export type IconName = 'home' | 'calendar' | 'bolt' | 'ticket' | 'bell' | 'check' | 'x' | 'chevron-left' | 'chevron-right' | 'download' | 'pin' | 'clock' | 'card' | 'share' | 'plus' | 'user' | 'logout' | 'users' | 'chart' | 'list' | 'edit' | 'trash' | 'search' | 'grid' | 'megaphone' | 'move' | 'tag';
+export type IconName = 'home' | 'calendar' | 'bolt' | 'ticket' | 'bell' | 'check' | 'x' | 'chevron-left' | 'chevron-right' | 'download' | 'pin' | 'clock' | 'card' | 'share' | 'plus' | 'user' | 'logout' | 'users' | 'chart' | 'list' | 'edit' | 'trash' | 'search' | 'grid' | 'megaphone' | 'move' | 'tag' | 'sun' | 'moon';
 
 /** Tiny inline icon set (stroke icons, no icon font to download). */
 @Component({
@@ -36,6 +36,8 @@ export type IconName = 'home' | 'calendar' | 'bolt' | 'ticket' | 'bell' | 'check
         @case ('grid') { <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /> }
         @case ('megaphone') { <path d="M3 10v4h4l9 5V5L7 10zM19 9a3 3 0 0 1 0 6M7 14l1 6h3l-1-5" /> }
         @case ('move') { <path d="M7 7h13l-4-4M17 17H4l4 4" /> }
+        @case ('sun') { <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /> }
+        @case ('moon') { <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" /> }
         @case ('tag') { <path d="M3 12V3h9l9 9-9 9zM7.5 7.5h.01" /> }
       }
     </svg>
